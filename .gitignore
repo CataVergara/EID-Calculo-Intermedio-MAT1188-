@@ -1,0 +1,14 @@
+﻿__pycache__/
+*.pyc
+media/
+*.mp4
+*.png
+*.jpg
+*.svg
+*.webm
+Tex/
+.DS_Store
+Thumbs.db
+venv/
+.env
+.venv/
