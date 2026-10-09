@@ -9,19 +9,17 @@
 - **Pregunta central:** *¿Por qué una integral definida puede ser menor que el área geométrica total?*
 
 ## Integrantes
-- INTEGRANTE_1 – GitHub: `CATALINA JAVIERA VERGARA ALARCON`
-- INTEGRANTE_2 – GitHub: `IGNACIO ALEXANDER DE CELIS VALENCIA`
-- INTEGRANTE_3 – GitHub: `MARCELO FABIÁN SANTANA ASTORGA`
-
-_Reemplace los datos con los nombres y cuentas reales antes de entregar._
+- CATALINA JAVIERA VERGARA ALARCON – GitHub: [@CataVergara](https://github.com/CataVergara)
+- IGNACIO ALEXANDER DE CELIS VALENCIA – GitHub: `IGNACIO ALEXANDER DE CELIS VALENCIA`
+- MARCELO FABIÁN SANTANA ASTORGA – GitHub: `MARCELO FABIÁN SANTANA ASTORGA`
 
 ## Archivos principales
 - `comun.py` – Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
 - `escenas.py` – Las 10 escenas que componen el video del proyecto (Manim Community 0.22.0).
 - `README.md` – Este archivo.
-- `render.ps1` – Script para renderizar en alta calidad (1080p15) y unir escenas (facilita la obtención de un único MP4 si lo desea el equipo).
+- `render.ps1` – Script para renderizar en alta calidad (1080p60) y unir escenas (facilita la obtención de un único MP4 si lo desea el equipo).
 - `ficha.pdf` – Ficha de entrega (a generar: incluye curso, integrantes, tema, pregunta central, duración, enlace a repositorio, SHA del commit entregado, referencias y declaración de IA).
-- `MATXXX_EID_G06_2026.mp4` – Video resultante una vez rendereado y unido (nombre a completar según indicaciones de Blackboard).
+- `MAT1188_EID_G06_2026.mp4` – Video resultante una vez rendereado y unido (puede ajustarse al nombre solicitado por Blackboard).
 
 ## Entorno y dependencias
 - Python 3.14.7
