@@ -1,4 +1,5 @@
 from manim import *
+import numpy as np
 
 # =============================================================================
 # 1. DATOS DEL EJEMPLO PRINCIPAL
@@ -79,8 +80,13 @@ COL_TITULO = GOLD         # titulos de escena
 COL_TECNICO = GREY        # notas al pie
 
 GRUPO = "Grupo 6"
-INTEGRANTES = "CATALINA JAVIERA VERGARA ALARCON  ·  IGNACIO ALEXANDER DE CELIS VALENCIA  ·  MARCELO FABIÁN SANTANA ASTORGA"
-PIE_DE_PAGINA = f"{GRUPO} · MAT1188 Calculo Intermedio · EID 2026"
+LISTA_INTEGRANTES = [
+    "Catalina Javiera Vergara Alarcón",
+    "Ignacio Alexander De Celis Valencia",
+    "Marcelo Fabián Santana Astorga",
+]
+INTEGRANTES = "\n".join(LISTA_INTEGRANTES)   # una línea por persona (evita desbordes)
+PIE_DE_PAGINA = f"{GRUPO} · MAT1188 Cálculo Intermedio · EID 2026"
 
 
 def titulo(texto, color=COL_TITULO):
@@ -211,3 +217,74 @@ def guias_verticales(ejes, n, color=COL_TECNICO):
             )
         )
     return guias
+
+
+# =============================================================================
+# 4. AYUDAS ANTI-SUPERPOSICION (ajuste de tamano y revision automatica)
+# =============================================================================
+ANCHO_SEGURO = 12.4     # el cuadro de Manim mide ~14,2 de ancho; dejamos margen
+
+
+def ajustar(mobj, ancho=ANCHO_SEGURO, alto=None):
+    """Reduce el objeto (sin deformarlo) si es mas ancho/alto que lo indicado.
+    Asi ningun texto se sale de la pantalla ni invade otra zona."""
+    if mobj.width > ancho:
+        mobj.scale_to_fit_width(ancho)
+    if alto is not None and mobj.height > alto:
+        mobj.scale_to_fit_height(alto)
+    return mobj
+
+
+def _textos(mobj, acumulado):
+    """Recorre los objetos y junta los textos (Text / MathTex), sin entrar a los ejes."""
+    if isinstance(mobj, (Axes, NumberLine)):
+        return
+    if isinstance(mobj, (Text, MathTex)):
+        acumulado.append(mobj)
+        return
+    for sub in mobj.submobjects:
+        _textos(sub, acumulado)
+
+
+def revisar(escena):
+    """Avisa por consola si dos textos se superponen o si uno se sale de pantalla."""
+    textos = []
+    for m in escena.mobjects:
+        _textos(m, textos)
+    nombre = type(escena).__name__
+    avisos = getattr(escena, "_avisos", None)
+    if avisos is None:
+        avisos = escena._avisos = set()
+
+    def caja(m):
+        return (m.get_left()[0], m.get_right()[0], m.get_bottom()[1], m.get_top()[1])
+
+    for m in textos:
+        if len(m.submobjects) == 0:
+            continue
+        x0, x1, y0, y1 = caja(m)
+        if x0 < -7.1 or x1 > 7.1 or y0 < -4.0 or y1 > 4.0:
+            msg = f"[REVISAR] {nombre}: un texto se sale de la pantalla (x {x0:.1f} a {x1:.1f}, y {y0:.1f} a {y1:.1f})"
+            if msg not in avisos:
+                avisos.add(msg)
+                print(msg)
+    for i in range(len(textos)):
+        for j in range(i + 1, len(textos)):
+            a, b = caja(textos[i]), caja(textos[j])
+            ancho = min(a[1], b[1]) - max(a[0], b[0])
+            alto = min(a[3], b[3]) - max(a[2], b[2])
+            if ancho > 0.08 and alto > 0.08:
+                msg = (f"[REVISAR] {nombre}: textos superpuestos cerca de "
+                       f"x={(max(a[0], b[0]) + min(a[1], b[1])) / 2:.1f}, "
+                       f"y={(max(a[2], b[2]) + min(a[3], b[3])) / 2:.1f}")
+                if msg not in avisos:
+                    avisos.add(msg)
+                    print(msg)
+
+
+class EscenaG6(Scene):
+    """Escena base: igual que Scene, pero revisa superposiciones en cada pausa."""
+
+    def wait(self, *args, **kwargs):
+        revisar(self)
+        super().wait(*args, **kwargs)
