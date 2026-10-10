@@ -1,4 +1,4 @@
-ï»¿from manim import *
+from manim import *
 from utils.comun import *
 
 
