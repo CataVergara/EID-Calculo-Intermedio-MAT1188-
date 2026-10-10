@@ -1,4 +1,4 @@
-﻿from manim import *
+ï»¿from manim import *
 from utils.comun import *
 
 
@@ -52,14 +52,14 @@ class Portada(Scene):
     """Presentacion: curso, grupo, integrantes, tema y pregunta central."""
 
     def construct(self):
-        curso = Text("CÃ¡lculo Intermedio Â· MAT1188", font_size=26, color=GREY_A)
-        eid = Text("EvaluaciÃ³n Integrada de DesempeÃ±o (EID) Â· 2026",
+        curso = Text("CÃ¡lculo Intermedio Ã· MAT1188", font_size=26, color=GREY_A)
+        eid = Text("Evaluaciónón Integrada de DesempeÃ±o (EID) Ã· 2026",
                    font_size=19, color=GREY_B)
         encabezado = VGroup(curso, eid).arrange(DOWN, buff=0.12).to_edge(UP, buff=0.4)
 
         grupo = Text(GRUPO, font_size=52, color=GOLD, weight="BOLD")
         integrantes = Text(INTEGRANTES, font_size=21, color=GREY_A)
-        tema = Text("Eje 6 Â· Integral definida y Ã¡rea geomÃ©trica",
+        tema = Text("Eje 6 Ã· Integral definida y Ã¡rea geomÃ©trica",
                     font_size=25, color=WHITE)
         tema2 = Text("Contribuciones positivas y negativas",
                      font_size=29, color=COL_CURVA, weight="BOLD")
@@ -73,8 +73,8 @@ class Portada(Scene):
         regiones_mini = regiones(ejes, grafo, opacity=0.55)
 
         pregunta = cuadro_pregunta(
-            "Â¿Por quÃ© una integral definida puede ser\n"
-            "menor que el Ã¡rea geomÃ©trica total?"
+            "Ã¿Por quééÃ© una integral definida puede ser\n"
+            "menor que el Ã¡rea geomÃ©trica total?"
         )
         pregunta.to_edge(DOWN, buff=0.85)
 
@@ -160,7 +160,7 @@ class TeoriaDefiniciones(Scene):
         # Contribucion positiva
         a_mas = VGroup(
             mt(r"A^{+}", color=COL_POS).scale(1.5),
-            Text("regiones sobre el eje  (f â‰¥ 0)", font_size=23),
+            Text("regiones sobre el eje  (f Ã¢â°¥ 0)", font_size=23),
         ).arrange(RIGHT, buff=0.4)
         a_mas[1].set_color(COL_POS)
 
@@ -183,9 +183,9 @@ class TeoriaDefiniciones(Scene):
                             font_size=21, color=COL_INTEGRAL)
 
         # Area geometrica
-        area = mt(r"\text{Area geomÃ©trica} \;=\; A^{+} + A^{-}",
+        area = mt(r"\text{Area geomÃ©trica} \;=\; A^{+} + A^{-}",
                   color=COL_AREA).scale(1.15)
-        area_txt = Text("Ã¡rea geomÃ©trica: todas las magnitudes se suman",
+        area_txt = Text("Ã¡rea geomÃ©trica: todas las magnitudes se suman",
                         font_size=21, color=COL_AREA)
 
         bloque_integral = VGroup(integral, integral_txt).arrange(DOWN, buff=0.2)
@@ -205,7 +205,7 @@ class TeoriaDefiniciones(Scene):
         comparacion = mt(r"A^{+} - A^{-} \;<\; A^{+} + A^{-}"
                          r"\qquad \text{siempre que } A^{-} > 0")
         comparacion.scale(0.9).to_edge(DOWN, buff=1.0)
-        nota = Text("Si f no toma valores negativos, Aâ» = 0 y ambas cantidades coinciden.",
+        nota = Text("Si f no toma valores negativos, AÃ¢» = 0 y ambas cantidades coinciden.",
                     font_size=21, color=GREY_A).to_edge(DOWN, buff=0.45)
 
         self.play(Write(comparacion))
@@ -251,7 +251,7 @@ class EjemploPrincipal(Scene):
 
         # Regiones con signo
         regiones_ejem = regiones(ejes, grafo, opacity=0.55)
-        etq_pos = Text("f â‰¥ 0", font_size=22, color=COL_POS).next_to(ejes.c2p(2.5, 2.25), UP)
+        etq_pos = Text("f Ã¢â°¥ 0", font_size=22, color=COL_POS).next_to(ejes.c2p(2.5, 2.25), UP)
         etq_neg = mt(r"f < 0", color=COL_NEG).scale(0.9).next_to(ejes.c2p(0, -4), DOWN, buff=0.2)
 
         self.play(FadeIn(regiones_ejem, run_time=2))
@@ -276,7 +276,7 @@ class Rectangulos(Scene):
         self.play(Create(grafo), run_time=1.5)
 
         panel = VGroup(
-            Text("ParticiÃ³n en 6 subintervalos", font_size=22, color=GOLD),
+            Text("Partición en 6 subintervalos", font_size=22, color=GOLD),
             mt(r"\Delta x = \frac{3-(-3)}{6} = 1").scale(0.85),
             mt(r"x_i^{*} : \text{ punto medio de cada subintervalo}").scale(0.7),
         ).arrange(DOWN, buff=0.3, aligned_edge=LEFT)
@@ -301,7 +301,7 @@ class Rectangulos(Scene):
 
         altura = VGroup(
             Text("altura = f(x_i*)", font_size=21, color=YELLOW),
-            Text("aporte = f(x_i*) Â· Î”x", font_size=21, color=YELLOW),
+            Text("aporte = f(x_i*) Ã· Ãâx", font_size=21, color=YELLOW),
         ).arrange(DOWN, buff=0.18).next_to(panel, DOWN, buff=0.6)
         self.play(FadeIn(altura))
         self.wait(3.5)
@@ -329,7 +329,7 @@ class SumaDeAportes(Scene):
                     color=COL_NEG).scale(0.72)
         linea3 = mt(r"S_6 = 4{,}5 - 11 = -6{,}5", color=COL_INTEGRAL).scale(0.95)
         linea4 = VGroup(
-            Text("Ãrea aproximada:", font_size=21, color=COL_AREA),
+            Text("Ãrea aproximada:", font_size=21, color=COL_AREA),
             mt(r"4{,}5 + 11 = 15{,}5", color=COL_AREA).scale(0.95),
         ).arrange(RIGHT, buff=0.25)
 
@@ -347,7 +347,7 @@ class SumaDeAportes(Scene):
         self.wait(2)
 
         mensaje = Text(
-            "La misma particiÃ³n entrega dos nÃºmeros distintos:",
+            "La misma partición entrega dos nÃºmeros distintos:",
             font_size=23, color=GREY_A,
         ).to_edge(DOWN, buff=1.5)
         mensaje2 = Text(
@@ -366,7 +366,7 @@ class Refinamiento(Scene):
 
     def construct(self):
         self.add(pie())
-        self.play(Write(titulo("Refinar la particiÃ³n:  n â†’ âˆž")))
+        self.play(Write(titulo("Refinar la partición:  n Ã¢â â Ã¢ËÅ¾")))
 
         ejes = crear_ejes(x_length=6.6, y_length=4.5, shift=LEFT * 3.3).shift(DOWN * 0.4)
         grafo = grafica(ejes)
@@ -442,7 +442,7 @@ class ComparacionFinal(Scene):
 
     def construct(self):
         self.add(pie())
-        self.play(Write(titulo("Integral definida frente al Ã¡rea geomÃ©trica")))
+        self.play(Write(titulo("Integral definida frente al Ã¡rea geomÃ©trica")))
 
         # Escala: A+ = 14/3, A- = 32/3  ->  unidades de pantalla
         s = 0.36
@@ -504,8 +504,8 @@ class RespuestaCentral(Scene):
     def construct(self):
         self.add(pie())
         pregunta = cuadro_pregunta(
-            "Â¿Por quÃ© una integral definida puede ser\n"
-            "menor que el Ã¡rea geomÃ©trica total?"
+            "Ã¿Por quééÃ© una integral definida puede ser\n"
+            "menor que el Ã¡rea geomÃ©trica total?"
         )
         pregunta.to_edge(UP, buff=0.4)
         self.play(FadeIn(pregunta, scale=0.95))
@@ -515,7 +515,7 @@ class RespuestaCentral(Scene):
             Text("Porque la integral suma contribuciones con signo:",
                  font_size=25, color=WHITE),
             Text("las regiones bajo el eje restan.", font_size=25, color=COL_NEG),
-            Text("El Ã¡rea geomÃ©trica, en cambio, suma todas las magnitudes.",
+            Text("El Ã¡rea geomÃ©trica, en cambio, suma todas las magnitudes.",
                  font_size=25, color=COL_AREA),
         ).arrange(DOWN, buff=0.28)
         respuestas.move_to(UP * 0.35)
@@ -529,15 +529,15 @@ class RespuestaCentral(Scene):
         self.wait(1.5)
 
         cierre = Text(
-            "En nuestro ejemplo:  âˆ’6  <  15,33   â†’   la integral es menor.",
+            "En nuestro ejemplo:  Ã¢Ëâ6  <  15,33   Ã¢â â   la integral es menor.",
             font_size=25, color=GOLD,
         ).to_edge(DOWN, buff=1.4)
         self.play(FadeIn(cierre, shift=UP * 0.2))
         self.wait(1.5)
 
         final = Text(
-            "La integral definida es el lÃ­mite de sumas con signo; coincide con el "
-            "Ã¡rea solo si f no toma valores negativos.",
+            "La integral definida es el lÃ­mite de sumas con signo; coincide con el "
+            "Ã¡rea solo si f no toma valores negativos.",
             font_size=21, color=GREY_A, line_spacing=1.15,
         ).to_edge(DOWN, buff=0.55)
         self.play(FadeIn(final, shift=UP * 0.15))
@@ -554,20 +554,20 @@ class Creditos(Scene):
         self.play(Write(titulo("Fuentes y recursos")))
 
         fuentes = VGroup(
-            Text("Apunte base: IntroducciÃ³n a la integral. MAT1188, 2026.",
+            Text("Apunte base: Introducción a la integral. MAT1188, 2026.",
                  font_size=21, color=GREY_A),
-            Text("Stewart, J. CÃ¡lculo de una variable. 7Âª ed. Cengage Learning.",
+            Text("Stewart, J. CÃ¡lculo de una variable. 7Ãª ed. Cengage Learning.",
                  font_size=21, color=GREY_A),
-            Text("Thomas, G. B. CÃ¡lculo. Una variable. 12Âª ed. Pearson.",
+            Text("Thomas, G. B. CÃ¡lculo. Una variable. 12Ãª ed. Pearson.",
                  font_size=21, color=GREY_A),
-            Text("DocumentaciÃ³n oficial de Manim Community (docs.manim.community).",
+            Text("Documentación oficial de Manim Community (docs.manim.community).",
                  font_size=21, color=GREY_A),
         ).arrange(DOWN, buff=0.28, aligned_edge=LEFT)
         fuentes.next_to(ORIGIN, UP, buff=0.6)
 
         ia = Text(
-            "DeclaraciÃ³n de IA: [completar: herramienta, finalidad, partes apoyadas "
-            "y verificaciÃ³n].",
+            "Declaración de IA: [completar: herramienta, finalidad, partes apoyadas "
+            "y verificación].",
             font_size=19, color=GREY_B, line_spacing=1.1,
         ).to_edge(DOWN, buff=1.3)
 
