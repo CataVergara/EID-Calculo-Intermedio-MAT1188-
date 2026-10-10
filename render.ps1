@@ -1,4 +1,4 @@
-# Script para renderizar y unir escenas (Manim + FFmpeg)
+﻿# Script para renderizar y unir escenas (Manim + FFmpeg)
 # Uso: .\render.ps1  (desde PowerShell, en esta carpeta)
 
 param(
@@ -9,13 +9,13 @@ param(
 $Base = ".\media\videos\escenas\$Quality"
 if (-not (Test-Path $Base)) {
   Write-Host "No existe $Base. Se intentara renderizar en $Quality..."
-  python -m manim render -$Quality.Replace('p','').Replace('1','').Replace('3','') escenas.py 2>$null
+  python -m manim render -$Quality.Replace('p','').Replace('1','').Replace('3','') scenes/escenas.py 2>$null
 }
 
 $files = Get-ChildItem -Path $Base -Filter "*.mp4" -File | Sort-Object Name
 if ($files.Count -eq 0) {
   Write-Host "No hay archivos .mp4 en $Base. Renderizando todas las escenas con -$($Quality)..."
-  python -m manim render -q escenas.py
+  python -m manim render -q scenes/escenas.py
   $files = Get-ChildItem -Path $Base -Filter "*.mp4" -File | Sort-Object Name
 }
 
