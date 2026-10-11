@@ -14,48 +14,59 @@
 - MARCELO FABIÁN SANTANA ASTORGA – GitHub: `MARCELO FABIÁN SANTANA ASTORGA`
 
 ## Archivos principales
-- `comun.py` – Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
-- `escenas.py` – Las 10 escenas que componen el video del proyecto (Manim Community 0.22.0).
+- `utils/comun.py` – Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
+- `scenes/escenas.py` – Las 10 escenas que componen el video del proyecto (Manim Community 0.22.0).
 - `README.md` – Este archivo.
-- `render.ps1` – Script para renderizar en alta calidad (1080p60) y unir escenas (facilita la obtención de un único MP4 si lo desea el equipo).
-- `ficha.pdf` – Ficha de entrega (a generar: incluye curso, integrantes, tema, pregunta central, duración, enlace a repositorio, SHA del commit entregado, referencias y declaración de IA).
-- `MAT1188_EID_G06_2026.mp4` – Video resultante una vez rendereado y unido (puede ajustarse al nombre solicitado por Blackboard).
+- `render.py` y `render.ps1` – Renderizan y ensamblan las diez escenas en orden narrativo.
+- Ficha de entrega: no está incluida en este repositorio; confirmar su formato con la pauta de entrega completa.
+- `media/output/MAT1188_EID_G06_2026.mp4` – Video generado localmente; los renders no se versionan.
 
 ## Entorno y dependencias
-- Python 3.14.7
-- Manim Community 0.22.0
-- NumPy 2.5.3
-- MiKTeX (pdflatex) 25.12 – necesario para fórmulas LaTeX.
-- FFmpeg 7.1 (incluido vía `imageio-ffmpeg`) – para codificación de video.
+Python 3.13 y Manim Community 0.22.0. Las dependencias de Python están fijadas en `requirements.txt`.
+Manim necesita Cairo/Pango para texto y una distribución LaTeX con `latex` y `dvisvgm` para fórmulas.
+FFmpeg debe estar en el PATH; el ensamblado también admite el ejecutable de `imageio-ffmpeg`.
 
-Para instalar dependencias mínimas (si falta alguna):
-```powershell
-pip install manim==0.22.0 numpy imageio-ffmpeg
+En macOS, instalar las dependencias del sistema:
+```sh
+brew install pkgconf cairo pango texlive ffmpeg
+```
+En Windows, instalar MiKTeX y comprobar `latex --version` y `dvisvgm --version`.
+Consultar la [instalación oficial de Manim](https://docs.manim.community/en/stable/installation.html) para otras plataformas.
+
+Crear un entorno virtual desde la raíz del repositorio:
+```sh
+python -m venv .venv
+```
+Activarlo con `source .venv/bin/activate` en macOS/Linux o `.\.venv\Scripts\Activate.ps1` en PowerShell y ejecutar:
+```sh
+python -m pip install -r requirements.txt
 ```
 
 ## Ejecución
-Desde la carpeta del proyecto (`C:\Users\cata2\OneDrive\Desktop\EID Calculo Intermedio (MAT1188)\`):
+Los archivos actuales están en `scenes/escenas.py` y `utils/comun.py`. Ejecutar desde la raíz del repositorio.
 
-**Renderizar una escena en calidad previa (rápido):**
-```powershell
-python -m manim render -ql escenas.py Portada
+**Una escena en calidad de prueba:**
+```sh
+python -m manim render -ql scenes/escenas.py Portada
 ```
 
-**Renderizar una escena en alta calidad (1080p15, recomendado para entrega):**
-```powershell
-python -m manim render -qh escenas.py Portada
+**Las diez escenas y un único MP4 en orden narrativo:**
+```sh
+python render.py --quality ql
+python render.py --quality qh
 ```
+`ql` genera 480p15, `qm` 720p30, `qh` 1080p60 y `qk` 2160p60.
+El resultado se guarda en `media/output/MAT1188_EID_G06_2026.mp4`.
+Cada ejecución reemplaza ese resultado con la calidad elegida. Para conservar ambos, usar `--output media/output/preview.mp4` en la prueba.
+El ensamblado incluye únicamente las diez escenas, desde Portada hasta Creditos, y falla si falta alguna o si FFmpeg falla.
+Para unir renders existentes: `python render.py --quality qh --skip-render`.
 
-**Renderizar todas las escenas en alta calidad:**
-```powershell
-python -m manim render -qh escenas.py
-```
+En PowerShell se puede usar el mismo flujo con `.\render.ps1 -Calidad qh`.
 
-**Unir las escenas (OPCIONAL) para obtener un único MP4:**
-```powershell
-.\render.ps1
+**Verificación de cálculos y ensamblado:**
+```sh
+python -m unittest discover -s tests -v
 ```
-El script guarda el resultado en `media/videos/escenas/1080p15/VIDEO_FINAL.mp4` (o el nombre indicado). En el proyecto actual, el guion y la narración definieron las 10 escenas; unirlas en un solo archivo es útil para entregar `MATXXX_EID_G06_2026.mp4`. Verifique el límite (entre 4 y 6 minutos) tras la edición y ajuste de narración.
 
 ## Ejemplo principal
 - **Función:** $f(x)=x^2-4$
@@ -76,7 +87,7 @@ El script guarda el resultado en `media/videos/escenas/1080p15/VIDEO_FINAL.mp4` 
 5. **Rectangulos** – Suma de Riemann de punto medio con $n=6$: partición, $\Delta x$, puntos muestra y rectángulos.
 6. **SumaDeAportes** – Sumamos aportes: obtenemos $S_6 = -6,5$ (aprox. integral) vs área $15,5$.
 7. **Refinamiento** – $n=6 \to 12 \to 24$: $S_n \to -6$ y área $\to 46/3$. Muestra el límite de la suma de Riemann.
-8. **ComparacionFinal** – Comparación visual de barras (verde/rojo) entre integral y área geométrica.
+8. **ComparacionFinal** – Barras de magnitudes para el área y flechas con signo para la integral, con origen y valor neto.
 9. **RespuestaCentral** – Respuesta explícita a la pregunta central: $A^- > 0 \implies A^+-A^- < A^++A^-$.
 10. **Creditos** – Fuentes, recursos externos y declaración de IA.
 
@@ -87,16 +98,12 @@ El script guarda el resultado en `media/videos/escenas/1080p15/VIDEO_FINAL.mp4` 
 - Manim Community. Documentación oficial: [docs.manim.community](https://docs.manim.community/).
 
 ## Declaración de IA
-Declarar en `ficha.pdf`:
-- **Herramienta:** (ej.: ChatGPT, Claude, Gemini, Copilot u otra) – especificar versión.
-- **Finalidad:** (ej.: apoyo en escritura, creación de guion, revisión matemática, generación de README, estructura de código Manim).
-- **Partes apoyadas:** indicar archivos, secciones o funciones.
-- **Verificación:** cómo se verificaron los cálculos, fórmulas y resultados (comparación con valores exactos, revisión manual, ensayo de render).
-- **Nota:** En caso de no usar IA, declarar explícitamente: *"No se utilizó inteligencia artificial en la realización de este proyecto."*
+Esta revisión utilizó Codex (OpenAI) para revisar el código, corregir la distribución visual y los scripts de render, y verificar cálculos y resultados renderizados.
+Los créditos describen este apoyo. El equipo debe añadir en su entrega el detalle de cualquier uso previo de IA, que no se puede reconstruir a partir del repositorio.
 
 ## Notas técnicas
-- Los cálculos ($A^+, A^-, \int, \text{área}$) están centralizados en `comun.py` para asegurar coherencia entre escenas (apoyo al criterio V2/V3 y a la defensa D2/D4).
+- Los cálculos ($A^+, A^-, \int, \text{área}$) están centralizados en `utils/comun.py` para asegurar coherencia entre escenas.
 - Se emplea suma de Riemann de **punto medio** (transparente, evita ambigüedad y es fácil de visualizar).
-- La partición se refina $n=6,12,24$ hasta aproximar a los valores exactos $-6$ y $46/3\approx 15,33$, mostrando el proceso de límite (criterio V1/V3 y defensa D1).
-- Escalas y etiquetas visibles (criterio V4). Diferenciación clara entre rectángulos rojos/verde para enfatizar aportes con signo (criterio V5).
-- Duración aproximada total de las escenas renderizadas: **2 min 56 s**. Tras añadir narración, transiciones, silencios y edición, el video MP4 deberá ajustarse al rango **4–6 minutos** exigido (sección 2 de la pauta).
+- La partición se refina $n=6,12,24$ hasta aproximar a los valores exactos $-6$ y $46/3\approx 15,33$, mostrando el proceso de límite.
+- Escalas y etiquetas visibles. Diferenciación clara entre rectángulos rojos/verde para enfatizar aportes con signo.
+- El PDF de temas proporcionado define el tema del grupo 6, pero no fija una duración ni un formato de ficha. Confirmar esos requisitos con la pauta de entrega completa. El render es una animación sin narración; medir su duración real con FFprobe tras generarlo.
