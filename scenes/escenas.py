@@ -1,5 +1,6 @@
 from manim import *
 import numpy as np
+from decimal import Decimal, ROUND_HALF_UP
 from utils.comun import *
 
 
@@ -8,7 +9,8 @@ from utils.comun import *
 # =============================================================================
 def fmt(x, dec=2):
     """Numero con coma decimal, listo para usar dentro de MathTex."""
-    return f"{x:.{dec}f}".replace(".", "{,}")
+    redondeado = Decimal(str(x)).quantize(Decimal(10) ** -dec, rounding=ROUND_HALF_UP)
+    return f"{redondeado:.{dec}f}".replace(".", "{,}")
 
 
 def mt(*args, **kwargs):
@@ -66,8 +68,8 @@ class Portada(EscenaG6):
                      font_size=28, color=COL_CURVA, weight="BOLD")
         col_izq = VGroup(grupo, integrantes, tema, tema2)
         col_izq.arrange(DOWN, buff=0.25, aligned_edge=LEFT)
-        ajustar(col_izq, 6.4, 4.2)
-        col_izq.move_to(LEFT * 3.6 + UP * 0.45)
+        ajustar(col_izq, 6.4, 3.85)
+        col_izq.move_to(LEFT * 3.6 + UP * 0.65)
 
         ejes = crear_ejes(x_length=5.4, y_length=3.2, numeros=False)
         ejes.move_to(RIGHT * 4.1 + UP * 0.9)
@@ -112,7 +114,7 @@ class TeoriaSigno(EscenaG6):
 
         ejes = Axes(
             x_range=[-3.6, 3.6, 1], y_range=[-3, 3, 1],
-            x_length=8.6, y_length=3.0,
+            x_length=8.6, y_length=2.8,
             axis_config={"color": COL_EJE, "stroke_width": 3,
                          "include_ticks": True, "tick_size": 0.06},
             tips=False,
@@ -131,13 +133,15 @@ class TeoriaSigno(EscenaG6):
         etq_pos = Text("aporte positivo", font_size=20, color=COL_POS)
         etq_pos.next_to(ejes.c2p(-2.88, g(-2.88)), UP, buff=0.12)
         etq_neg = Text("aporte negativo", font_size=20, color=COL_NEG)
-        etq_neg.next_to(ejes.c2p(-0.32, g(-0.32)), DOWN, buff=0.12)
-        self.play(FadeIn(etq_pos), FadeIn(etq_neg))
+        etq_neg.move_to(RIGHT * 1.15 + DOWN * 1.1)
+        indicador = Arrow(etq_neg.get_top(), ejes.c2p(-0.32, g(-0.32)),
+                          buff=0.12, color=COL_NEG, stroke_width=2)
+        self.play(FadeIn(etq_pos), FadeIn(etq_neg), GrowArrow(indicador))
         self.wait(2)
 
         # Formula de la suma de Riemann
         suma = mt(r"S_n = \sum_{i=1}^{n} f(x_i^{*})\,\Delta x").scale(0.95)
-        suma.to_edge(DOWN, buff=1.35)
+        suma.to_edge(DOWN, buff=1.27)
         self.play(Write(suma))
         self.wait(1.5)
 
@@ -145,9 +149,9 @@ class TeoriaSigno(EscenaG6):
             r"\Delta x = \frac{b-a}{n}, \qquad "
             r"x_i^{*} \in [x_{i-1},\,x_i], \qquad "
             r"f \text{ continua en } [a,b]"
-        ).scale(0.7)
+        ).scale(0.65)
         ajustar(condiciones, 12.4)
-        condiciones.next_to(suma, DOWN, buff=0.25)
+        condiciones.next_to(suma, DOWN, buff=0.15)
         self.play(FadeIn(condiciones, shift=UP * 0.15))
         self.wait(2.5)
 
@@ -253,24 +257,30 @@ class EjemploPrincipal(EscenaG6):
         self.wait(1.5)
 
         # Raices
-        raiz_izq = mt(r"x=-2").scale(0.8).next_to(ejes.c2p(-2, 0), DOWN, buff=0.55)
-        raiz_der = mt(r"x=2").scale(0.8).next_to(ejes.c2p(2, 0), DOWN, buff=0.55)
+        raiz_izq = mt(r"x=-2").scale(0.8).next_to(ejes.c2p(-2, -5), DOWN, buff=0.12)
+        raiz_der = mt(r"x=2").scale(0.8).next_to(ejes.c2p(2, -5), DOWN, buff=0.12)
+        guias_raices = VGroup(*[
+            DashedLine(ejes.c2p(x, 0), ejes.c2p(x, -5),
+                       color=COL_EJE, stroke_width=1.4, dash_length=0.1)
+            for x in RAICES
+        ])
         resolucion = mt(r"x^{2} - 4 = 0 \;\Rightarrow\; x = -2 \text{ o } x = 2")
         resolucion.scale(0.8)
-        ajustar(resolucion, 5.0)
+        ajustar(resolucion, 4.3)
         resolucion.next_to(datos, DOWN, buff=0.45, aligned_edge=LEFT)
 
-        self.play(FadeIn(raiz_izq), FadeIn(raiz_der))
+        self.play(Create(guias_raices), FadeIn(raiz_izq), FadeIn(raiz_der))
         self.play(Write(resolucion))
         self.wait(1.5)
 
         # Regiones con signo
         regiones_ejem = regiones(ejes, grafo, opacity=0.55)
         etq_pos = Text("f ≥ 0", font_size=22, color=COL_POS).move_to(ejes.c2p(3.55, 2.0))
-        etq_neg = mt(r"f < 0", color=COL_NEG).scale(0.9).move_to(ejes.c2p(0.0, -1.2))
+        etq_neg = mt(r"f < 0", color=COL_NEG).scale(0.75).move_to(ejes.c2p(0.9, -1.2))
+        fondo_etq_neg = BackgroundRectangle(etq_neg, fill_opacity=0.85, buff=0.07)
 
         self.play(FadeIn(regiones_ejem, run_time=2))
-        self.play(FadeIn(etq_pos), Write(etq_neg))
+        self.play(FadeIn(etq_pos), FadeIn(fondo_etq_neg), Write(etq_neg))
         self.wait(2.5)
 
 
@@ -341,8 +351,10 @@ class SumaDeAportes(EscenaG6):
 
         # Panel de resultados a la derecha
         linea1 = mt(r"\sum^{+} = 2{,}25 + 2{,}25 = 4{,}5", color=COL_POS).scale(0.85)
-        linea2 = mt(r"\sum^{-} = -1{,}75 - 3{,}75 - 3{,}75 - 1{,}75 = -11",
-                    color=COL_NEG).scale(0.72)
+        linea2 = VGroup(
+            mt(r"\sum^{-} = -1{,}75 - 3{,}75", font_size=36, color=COL_NEG),
+            mt(r"\phantom{\sum^{-}}\; - 3{,}75 - 1{,}75 = -11", font_size=36, color=COL_NEG),
+        ).arrange(DOWN, buff=0.14, aligned_edge=LEFT)
         linea3 = mt(r"S_6 = 4{,}5 - 11 = -6{,}5", color=COL_INTEGRAL).scale(0.95)
         linea4 = VGroup(
             Text("Área aproximada:", font_size=21, color=COL_AREA),
@@ -393,7 +405,7 @@ class Refinamiento(EscenaG6):
         self.play(FadeIn(r6), Write(contador), run_time=1.5)
 
         # Tabla de resultados (columnas fijas para que no se superpongan)
-        cols = [1.9, 3.8, 5.7]
+        cols = [1.4, 3.4, 5.55]
 
         def fila(elementos, y):
             g = VGroup(*elementos)
@@ -406,14 +418,20 @@ class Refinamiento(EscenaG6):
             mt(r"S_n", color=COL_INTEGRAL).scale(0.85),
             mt(r"\text{\'Area}_n", color=COL_AREA).scale(0.85),
         ], 2.3)
-        fila6 = fila([mt("6").scale(0.9), mt("-6{,}5", color=COL_INTEGRAL).scale(0.9),
-                      mt("15{,}5", color=COL_AREA).scale(0.9)], 1.4)
-        fila12 = fila([mt("12").scale(0.9), mt("-6{,}13", color=COL_INTEGRAL).scale(0.9),
-                       mt("15{,}38", color=COL_AREA).scale(0.9)], 0.6)
-        fila24 = fila([mt("24").scale(0.9), mt("-6{,}03", color=COL_INTEGRAL).scale(0.9),
-                       mt("15{,}34", color=COL_AREA).scale(0.9)], -0.2)
-        limite = fila([mt(r"n \to \infty").scale(0.9), mt("-6", color=COL_INTEGRAL).scale(0.95),
-                       mt(r"46/3 \approx 15{,}33", color=COL_AREA).scale(0.8)], -1.2)
+        def fila_aproximacion(n, y):
+            _, _, firmado, area = sumas_punto_medio(n)
+            return fila([mt(str(n)).scale(0.9),
+                         mt(fmt(firmado), color=COL_INTEGRAL).scale(0.9),
+                         mt(fmt(area), color=COL_AREA).scale(0.9)], y)
+
+        fila6 = fila_aproximacion(6, 1.4)
+        fila12 = fila_aproximacion(12, 0.6)
+        fila24 = fila_aproximacion(24, -0.2)
+        limite = fila([mt(r"n\to\infty").scale(0.75), mt("-6", color=COL_INTEGRAL).scale(0.95),
+                       mt(r"46/3").scale(0.9).set_color(COL_AREA)], -1.2)
+        nota_limite = Text("Valores límite: Δx → 0", font_size=20, color=GREY_A)
+        nota_limite.move_to(RIGHT * 3.6 + DOWN * 2.05)
+        ajustar(nota_limite, 5.5)
 
         self.play(FadeIn(cabeza), FadeIn(fila6))
         self.wait(2)
@@ -438,7 +456,7 @@ class Refinamiento(EscenaG6):
         )
         self.wait(2)
 
-        self.play(FadeIn(limite, shift=UP * 0.15))
+        self.play(FadeIn(limite, shift=UP * 0.15), FadeIn(nota_limite))
         self.wait(3)
 
 
@@ -455,11 +473,11 @@ class ComparacionFinal(EscenaG6):
         # Escala: A+ = 14/3, A- = 32/3  ->  unidades de pantalla
         s = 0.36
         ancho_pos = A_MAS * s          # ~1,68
-        ancho_neg = A_MENOS * s        # ~3,84
         ancho_area = (A_MAS + A_MENOS) * s     # ~5,52
-        ancho_integral = A_MAS * s             # parte positiva de la integral
-
-        linea_base = Line(LEFT * 6.4, RIGHT * 6.4, color=COL_EJE, stroke_width=2)
+        x_neto = INTEGRAL * s
+        linea_base = Line([-4.5, -1.8, 0], [6.0, -1.8, 0], color=COL_EJE, stroke_width=2)
+        origen = DashedLine([0, -1.95, 0], [0, 1.55, 0], color=COL_EJE)
+        cero = mt("0", font_size=24).move_to([0.22, -1.55, 0])
 
         # Etiquetas de las formulas
         txt_area = mt(r"\text{\'Area} = A^{+} + A^{-} = \frac{46}{3} \approx 15{,}33",
@@ -467,38 +485,39 @@ class ComparacionFinal(EscenaG6):
         txt_integral = mt(r"\int_{-3}^{3} f\,dx = A^{+} - A^{-} = -6",
                           color=COL_INTEGRAL).scale(0.85)
         txt_area.move_to(UP * 2.5)
-        txt_integral.move_to(DOWN * 2.45)
+        txt_integral.move_to(DOWN * 2.55)
 
         # --- Barra superior: AREA (verde + rojo hacia la derecha) ---
         y_area = 1.15
         barra_pos_area = barra_horizontal(0, ancho_pos, y_area, COL_POS)
         barra_neg_area = barra_horizontal(ancho_pos, ancho_area, y_area, COL_NEG)
-        etq_pos_area = mt(r"A^{+}", color=COL_POS).scale(0.8).next_to(barra_pos_area, UP, buff=0.05)
-        etq_neg_area = mt(r"A^{-}", color=COL_NEG).scale(0.8).next_to(barra_neg_area, UP, buff=0.05)
+        etq_pos_area = mt(r"A^{+}=14/3", font_size=27, color=COL_POS).next_to(barra_pos_area, UP, buff=0.16)
+        etq_neg_area = mt(r"A^{-}=32/3", font_size=27, color=COL_NEG).next_to(barra_neg_area, UP, buff=0.16)
 
-        # --- Barra inferior: INTEGRAL (positivo a la derecha, negativo a la izquierda) ---
-        y_int = -1.05
-        barra_pos_int = barra_horizontal(0, ancho_integral, y_int, COL_POS)
-        barra_neg_int = barra_horizontal(-ancho_neg, 0, y_int, COL_NEG)
-        neto = Dot([-ancho_neg + ancho_pos, y_int, 0], color=COL_INTEGRAL, radius=0.09)
-        marca = DashedLine([-ancho_neg + ancho_pos, y_int - 0.5, 0],
-                           [-ancho_neg + ancho_pos, y_int + 0.5, 0], color=COL_INTEGRAL)
-        etq_neto = mt(r"\text{valor neto}", color=COL_INTEGRAL).scale(0.7)
-        etq_neto.next_to(neto, DOWN, buff=0.35)
+        # Integral: avanzar A+ y retroceder A- desde el extremo alcanzado.
+        avance = Arrow([0, -0.35, 0], [ancho_pos, -0.35, 0], buff=0, color=COL_POS)
+        retroceso = Arrow([ancho_pos, -1.15, 0], [x_neto, -1.15, 0], buff=0, color=COL_NEG)
+        enlace = DashedLine([ancho_pos, -0.35, 0], [ancho_pos, -1.15, 0], color=COL_EJE)
+        etq_avance = mt(r"+A^{+}", font_size=27, color=COL_POS).next_to(avance, UP, buff=0.1)
+        etq_retroceso = mt(r"-A^{-}", font_size=27, color=COL_NEG).next_to(retroceso, UP, buff=0.1)
+        neto = Dot([x_neto, -1.8, 0], color=COL_INTEGRAL, radius=0.09)
+        marca = DashedLine([x_neto, -1.15, 0], [x_neto, -1.8, 0], color=COL_INTEGRAL)
+        etq_neto = mt("-6", font_size=27, color=COL_INTEGRAL).move_to([x_neto - 0.4, -1.55, 0])
 
-        self.play(Create(linea_base))
+        self.play(Create(linea_base), Create(origen), Write(cero))
         self.play(Write(txt_area))
         self.play(FadeIn(barra_pos_area), FadeIn(barra_neg_area), run_time=1.8)
         self.play(FadeIn(etq_pos_area), FadeIn(etq_neg_area))
         self.wait(2)
 
         self.play(Write(txt_integral))
-        self.play(FadeIn(barra_neg_int), FadeIn(barra_pos_int), run_time=1.8)
+        self.play(GrowArrow(avance), FadeIn(etq_avance), run_time=1.2)
+        self.play(Create(enlace), GrowArrow(retroceso), FadeIn(etq_retroceso), run_time=1.5)
         self.play(GrowFromCenter(neto), Create(marca), FadeIn(etq_neto))
         self.wait(1.5)
 
         conclusion = mt(r"A^{-} > 0 \;\Rightarrow\; A^{+} - A^{-} < A^{+} + A^{-}")
-        conclusion.scale(0.95).move_to(DOWN * 3.15)
+        conclusion.scale(0.85).move_to(DOWN * 3.4)
         self.play(Write(conclusion))
         self.wait(3)
 
@@ -578,8 +597,9 @@ class Creditos(EscenaG6):
         fuentes.next_to(ORIGIN, UP, buff=0.6)
 
         ia = Text(
-            "Declaración de IA: [completar: herramienta, finalidad,\n"
-            "partes apoyadas y verificación].",
+            "Apoyo de IA: Codex (OpenAI), revisión de código y distribución visual.\n"
+            "Partes revisadas: escenas, cálculos y scripts de render.\n"
+            "Verificación: cálculos exactos, pruebas y revisión de renders.",
             font_size=19, color=GREY_B, line_spacing=1.1,
         )
         ajustar(ia, 12.4)

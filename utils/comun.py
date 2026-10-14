@@ -52,6 +52,8 @@ def sumas_punto_medio(n):
     Nota: para n = 6, 12, 24 los extremos de subintervalo incluyen las
     raices x = -2 y x = 2, por lo que cada rectangulo queda de un solo color.
     """
+    if not isinstance(n, int) or isinstance(n, bool) or n <= 0:
+        raise ValueError("n debe ser un entero positivo")
     dx = (B - A) / n
     positivo = 0.0
     negativo = 0.0
@@ -111,6 +113,7 @@ def cuadro_pregunta(texto, width=9.4, height=1.6):
         fill_color="#1b3a5c", fill_opacity=0.92, stroke_color=GOLD, stroke_width=3.5,
     )
     texto_mobj = Text(texto, font_size=26, color=YELLOW, line_spacing=1.15)
+    ajustar(texto_mobj, ancho=width - 0.5, alto=height - 0.4)
     texto_mobj.move_to(fondo)
     return VGroup(fondo, texto_mobj)
 
