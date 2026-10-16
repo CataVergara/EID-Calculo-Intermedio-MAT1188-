@@ -109,7 +109,7 @@ El equipo declara el apoyo de Claude (Anthropic) en la guía de trabajo y el bor
 - La rúbrica exige un video de 4 a 6 minutos con las tres voces. El código sigue el guion de 5:15 de `docs/guion.pdf`, con tres bloques de 1:45. Este render todavía no incluye las grabaciones.
 - Las pausas se distribuyen entre los pasos de cada explicación con `esperar_hasta()`. `finalizar()` completa el tiempo reservado y avisa si una escena lo sobrepasa. Los tiempos se cuentan desde el inicio de cada escena.
 - Antes de modificar los tiempos, ensayar las voces y actualizar `utils/guion.py` y los puntos de pausa afectados. La duración propuesta no sustituye la revisión del montaje con audio.
-- `De Celis/comun.py` es una copia anterior que se conserva como referencia. El render utiliza `utils/comun.py` y `scenes/escenas.py`.
+- El render utiliza `utils/comun.py` y `scenes/escenas.py`.
 - Ver el [informe de revisión del issue #5](docs/REVISION_ISSUE_5.md) para conocer el estado del aporte y la validación de las correcciones.
 
 ## Tiempos del guion

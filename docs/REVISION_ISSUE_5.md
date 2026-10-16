@@ -8,7 +8,7 @@ El aporte de `De Celis/comun.py` no completa el issue #5. Al iniciar la revisió
 
 Además, `scenes/escenas.py` importa `utils.comun` y `render.py` ejecuta las escenas de `scenes/escenas.py`. Ninguno utiliza el archivo de la carpeta `De Celis`. Por eso el aporte recibido no modifica las fórmulas, los rótulos ni la duración del video que genera el proyecto.
 
-Se conserva esa copia como referencia. Las correcciones de esta revisión se realizan en los archivos que utiliza el render.
+La copia revisada está disponible en el historial de Git del commit `35c4817`. Las correcciones de esta revisión se realizaron en los archivos que utiliza el render.
 
 ## Correcciones realizadas
 
