@@ -6,13 +6,11 @@ import shutil
 import subprocess
 import sys
 
+from utils.guion import GUION
+
 
 ROOT = Path(__file__).resolve().parent
-SCENES = (
-    "Portada", "TeoriaSigno", "TeoriaDefiniciones", "EjemploPrincipal",
-    "Rectangulos", "SumaDeAportes", "Refinamiento", "ComparacionFinal",
-    "RespuestaCentral", "Creditos",
-)
+SCENES = tuple(GUION)
 QUALITY_DIRS = {
     "ql": "480p15", "qm": "720p30", "qh": "1080p60", "qk": "2160p60",
 }
