@@ -87,27 +87,22 @@ class Portada(EscenaG6):
         self.play(Write(tema), Write(tema2))
         self.play(Create(ejes), Create(grafo), FadeIn(regiones_mini), run_time=2)
         self.play(FadeIn(pregunta, scale=0.95))
-        self.wait(3)
+        self.finalizar()
 
 
 # =============================================================================
 # ESCENA 2 - TEORIA: APORTES CON SIGNO
 # =============================================================================
+
 class TeoriaSigno(EscenaG6):
-    """Cuando f toma valores negativos aparecen aportes negativos."""
+    """Aportes con signo, con pausas para explicar cada elemento de la suma."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("El problema: aportes con signo")))
-
-        idea = Text(
-            "Si f toma valores negativos en [a, b], algunos aportes son negativos.",
-            font_size=23,
-        )
-        ajustar(idea, 12.4)
-        idea.to_edge(UP, buff=1.15)
-        self.play(FadeIn(idea, shift=DOWN * 0.2))
-        self.wait(2)
+        idea = Text("La altura puede ser positiva o negativa. El ancho es positivo.",
+                    font_size=23)
+        ajustar(idea, 12.4).to_edge(UP, buff=1.15)
+        self.play(FadeIn(idea))
 
         def g(x):
             return 1.7 * np.sin(1.5 * x)
@@ -116,118 +111,81 @@ class TeoriaSigno(EscenaG6):
             x_range=[-3.6, 3.6, 1], y_range=[-3, 3, 1],
             x_length=8.6, y_length=2.8,
             axis_config={"color": COL_EJE, "stroke_width": 3,
-                         "include_ticks": True, "tick_size": 0.06},
-            tips=False,
+                         "include_ticks": True, "tick_size": 0.06}, tips=False,
         ).shift(UP * 0.2)
         curva = ejes.plot(g, x_range=[-3.2, 3.2], color=COL_CURVA, stroke_width=5)
+        suma = mt(r"S_n=\sum_{i=1}^{n} f(x_i^*)\,\Delta x").scale(0.95)
+        suma.to_edge(DOWN, buff=1.27)
+        condiciones = mt(r"\Delta x=\frac{b-a}{n},\quad a<b,\quad "
+                         r"x_i^*\in[x_{i-1},x_i],\quad f\text{ continua}").scale(0.65)
+        ajustar(condiciones, 12.4).next_to(suma, DOWN, buff=0.15)
+
+        self.esperar_hasta(4)
+        self.play(Create(ejes), Create(curva), run_time=2)
+        self.play(Write(suma), FadeIn(condiciones), run_time=2)
+        self.esperar_hasta(16)
         rects = rectangulos_genericos(ejes, g, -3.2, 3.2, 10)
+        self.play(LaggedStart(*[FadeIn(r) for r in rects], lag_ratio=0.12), run_time=3)
+        self.esperar_hasta(26)
 
-        self.play(Create(ejes), run_time=1.2)
-        self.play(Create(curva), run_time=1.2)
-        self.play(
-            LaggedStart(*[FadeIn(r, scale=0.9) for r in rects], lag_ratio=0.12),
-            run_time=2.5,
-        )
-
-        # Etiquetas sobre un rectangulo positivo y uno negativo
         etq_pos = Text("aporte positivo", font_size=20, color=COL_POS)
         etq_pos.next_to(ejes.c2p(-2.88, g(-2.88)), UP, buff=0.12)
         etq_neg = Text("aporte negativo", font_size=20, color=COL_NEG)
         etq_neg.move_to(RIGHT * 1.15 + DOWN * 1.1)
         indicador = Arrow(etq_neg.get_top(), ejes.c2p(-0.32, g(-0.32)),
                           buff=0.12, color=COL_NEG, stroke_width=2)
-        self.play(FadeIn(etq_pos), FadeIn(etq_neg), GrowArrow(indicador))
-        self.wait(2)
-
-        # Formula de la suma de Riemann
-        suma = mt(r"S_n = \sum_{i=1}^{n} f(x_i^{*})\,\Delta x").scale(0.95)
-        suma.to_edge(DOWN, buff=1.27)
-        self.play(Write(suma))
-        self.wait(1.5)
-
-        condiciones = mt(
-            r"\Delta x = \frac{b-a}{n}, \qquad "
-            r"x_i^{*} \in [x_{i-1},\,x_i], \qquad "
-            r"f \text{ continua en } [a,b]"
-        ).scale(0.65)
-        ajustar(condiciones, 12.4)
-        condiciones.next_to(suma, DOWN, buff=0.15)
-        self.play(FadeIn(condiciones, shift=UP * 0.15))
-        self.wait(2.5)
+        self.play(FadeIn(etq_pos), FadeIn(etq_neg), GrowArrow(indicador), run_time=1.5)
+        self.finalizar()
 
 
 # =============================================================================
 # ESCENA 3 - TEORIA: INTEGRAL vs AREA
 # =============================================================================
+
 class TeoriaDefiniciones(EscenaG6):
-    """Dos cantidades distintas: integral definida (con signo) y area (magnitudes)."""
+    """Primero define las áreas y después compara las dos operaciones."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("Dos cantidades distintas")))
-
-        # Contribucion positiva
         a_mas = VGroup(
-            mt(r"A^{+}", color=COL_POS).scale(1.5),
-            Text("regiones sobre el eje  (f ≥ 0)", font_size=23),
-        ).arrange(RIGHT, buff=0.4)
-        a_mas[1].set_color(COL_POS)
-
-        # Contribucion negativa
+            mt(r"A^+", color=COL_POS).scale(1.4),
+            Text("área de las regiones sobre el eje", font_size=25, color=COL_POS),
+        ).arrange(RIGHT, buff=0.4).move_to(UP * 1.4)
         a_menos = VGroup(
-            mt(r"A^{-}", color=COL_NEG).scale(1.5),
-            Text("regiones bajo el eje, en valor absoluto  (f < 0)", font_size=23),
-        ).arrange(RIGHT, buff=0.4)
-        a_menos[1].set_color(COL_NEG)
+            mt(r"A^-", color=COL_NEG).scale(1.4),
+            Text("área de las regiones bajo el eje", font_size=25, color=COL_NEG),
+        ).arrange(RIGHT, buff=0.4).move_to(DOWN * 0.1)
+        nota_areas = Text("Las dos áreas son positivas o cero.", font_size=24)
+        nota_areas.move_to(DOWN * 1.5)
+        self.play(FadeIn(a_mas))
+        self.esperar_hasta(7)
+        self.play(FadeIn(a_menos))
+        self.esperar_hasta(12)
+        self.play(FadeIn(nota_areas))
+        self.esperar_hasta(19)
+        self.play(FadeOut(VGroup(a_mas, a_menos, nota_areas)))
 
-        columnas = VGroup(a_mas, a_menos)
-        columnas.arrange(DOWN, buff=0.35, aligned_edge=LEFT)
-        ajustar(columnas, 12.0)
-        columnas.move_to(UP * 2.0)
-
-        self.play(FadeIn(a_mas, shift=RIGHT * 0.3))
-        self.wait(1)
-        self.play(FadeIn(a_menos, shift=RIGHT * 0.3))
-        self.wait(1.5)
-
-        # Integral definida
-        integral = mt(r"\int_{a}^{b} f(x)\,dx \;=\; A^{+} - A^{-}",
-                      color=COL_INTEGRAL).scale(1.15)
-        integral_txt = Text("integral definida: contribuciones con signo",
-                            font_size=21, color=COL_INTEGRAL)
-
-        # Área geométrica
-        area = mt(r"\text{\'Area geom\'etrica} \;=\; A^{+} + A^{-}",
-                  color=COL_AREA).scale(1.15)
-        area_txt = Text("Área geométrica: todas las magnitudes se suman",
-                        font_size=21, color=COL_AREA)
-
-        bloque_integral = VGroup(integral, integral_txt).arrange(DOWN, buff=0.2)
-        bloque_area = VGroup(area, area_txt).arrange(DOWN, buff=0.2)
-
-        ajustar(bloque_integral, 12.0)
-        ajustar(bloque_area, 12.0)
-        bloque_integral.move_to(UP * 0.2)
-        bloque_area.move_to(DOWN * 1.45)
-
-        self.play(Write(integral), FadeIn(integral_txt, shift=UP * 0.15))
-        self.wait(1.5)
-        self.play(Write(area), FadeIn(area_txt, shift=UP * 0.15))
-        self.wait(1.5)
-
-        # Comparacion y condicion
-        comparacion = mt(r"A^{+} - A^{-} \;<\; A^{+} + A^{-}"
-                         r"\qquad \text{siempre que } A^{-} > 0")
-        comparacion.scale(0.9).to_edge(DOWN, buff=1.0)
-        nota = Text("Si f no toma valores negativos, A⁻ = 0 y ambas cantidades coinciden.",
-                    font_size=21, color=GREY_A)
-        ajustar(nota, 12.4)
-        nota.to_edge(DOWN, buff=0.45)
-
-        self.play(Write(comparacion))
-        self.wait(1)
-        self.play(FadeIn(nota, shift=UP * 0.15))
-        self.wait(2)
+        integral = mt(r"I=\int_a^b f(x)\,dx=A^+-A^-", font_size=46, color=COL_INTEGRAL)
+        integral_txt = Text("La integral suma los aportes con su signo.",
+                            font_size=23, color=COL_INTEGRAL)
+        bloque_integral = VGroup(integral, integral_txt).arrange(DOWN, buff=0.25)
+        ajustar(bloque_integral, 12).move_to(UP * 1.45)
+        area = mt(r"A_{\mathrm{total}}=\int_a^b |f(x)|\,dx=A^++A^-",
+                  font_size=43, color=COL_AREA)
+        area_txt = Text("El valor absoluto permite sumar todas las áreas.",
+                        font_size=23, color=COL_AREA)
+        bloque_area = VGroup(area, area_txt).arrange(DOWN, buff=0.25)
+        ajustar(bloque_area, 12).move_to(DOWN * 0.65)
+        self.play(Write(integral), FadeIn(integral_txt))
+        self.esperar_hasta(27)
+        self.play(Write(area), FadeIn(area_txt), run_time=2)
+        self.esperar_hasta(37)
+        comparacion = mt(r"A^->0\quad\Rightarrow\quad A^+-A^-<A^++A^-", font_size=37)
+        comparacion.move_to(DOWN * 2.35)
+        nota = Text("Si A⁻ = 0, ambas cantidades coinciden.", font_size=22, color=GREY_A)
+        nota.move_to(DOWN * 3.1)
+        self.play(Write(comparacion), FadeIn(nota))
+        self.finalizar()
 
 
 # =============================================================================
@@ -237,7 +195,6 @@ class EjemploPrincipal(EscenaG6):
     """f(x) = x^2 - 4 en [-3, 3]: datos, raices y regiones con signo."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("Nuestro ejemplo")))
 
         datos = VGroup(
@@ -254,7 +211,7 @@ class EjemploPrincipal(EscenaG6):
         self.play(FadeIn(datos, shift=RIGHT * 0.2))
         self.play(Create(ejes), run_time=1.5)
         self.play(Create(grafo), run_time=2)
-        self.wait(1.5)
+        self.esperar_hasta(14)
 
         # Raices
         raiz_izq = mt(r"x=-2").scale(0.8).next_to(ejes.c2p(-2, -5), DOWN, buff=0.12)
@@ -271,7 +228,7 @@ class EjemploPrincipal(EscenaG6):
 
         self.play(Create(guias_raices), FadeIn(raiz_izq), FadeIn(raiz_der))
         self.play(Write(resolucion))
-        self.wait(1.5)
+        self.esperar_hasta(23)
 
         # Regiones con signo
         regiones_ejem = regiones(ejes, grafo, opacity=0.55)
@@ -281,7 +238,7 @@ class EjemploPrincipal(EscenaG6):
 
         self.play(FadeIn(regiones_ejem, run_time=2))
         self.play(FadeIn(etq_pos), FadeIn(fondo_etq_neg), Write(etq_neg))
-        self.wait(2.5)
+        self.finalizar()
 
 
 # =============================================================================
@@ -291,7 +248,6 @@ class Rectangulos(EscenaG6):
     """Construccion de la suma de Riemann de punto medio con n = 6."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("Suma de Riemann con n = 6")))
 
         n = 6
@@ -308,6 +264,7 @@ class Rectangulos(EscenaG6):
         ajustar(panel, 5.2)
         panel.move_to(RIGHT * 4.1 + UP * 1.25)
         self.play(FadeIn(panel, shift=DOWN * 0.2))
+        self.esperar_hasta(9)
 
         guias = guias_verticales(ejes, n)
         self.play(LaggedStart(*[Create(gl) for gl in guias], lag_ratio=0.12),
@@ -316,7 +273,7 @@ class Rectangulos(EscenaG6):
         puntos = puntos_muestra(ejes, n)
         self.play(LaggedStart(*[GrowFromCenter(p) for p in puntos], lag_ratio=0.15),
                   run_time=1.5)
-        self.wait(1)
+        self.esperar_hasta(16)
 
         # Rectangulos uno a uno; altura f(x_i*) * dx
         rects = rectangulos_punto_medio(ejes, n)
@@ -330,7 +287,7 @@ class Rectangulos(EscenaG6):
             Text("aporte = f(x_i*) · Δx", font_size=21, color=YELLOW),
         ).arrange(DOWN, buff=0.18).next_to(panel, DOWN, buff=0.6)
         self.play(FadeIn(altura))
-        self.wait(3.5)
+        self.finalizar()
 
 
 # =============================================================================
@@ -340,7 +297,6 @@ class SumaDeAportes(EscenaG6):
     """Con n = 6: suma de aportes positivos, negativos, integral y area aprox."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("Suma de los aportes (n = 6)")))
 
         n = 6
@@ -367,13 +323,13 @@ class SumaDeAportes(EscenaG6):
         panel.move_to(RIGHT * 3.75 + UP * 0.6)
 
         self.play(FadeIn(linea1, shift=RIGHT * 0.2))
-        self.wait(2.5)
+        self.esperar_hasta(8)
         self.play(FadeIn(linea2, shift=RIGHT * 0.2))
-        self.wait(2.5)
+        self.esperar_hasta(21)
         self.play(FadeIn(linea3, shift=RIGHT * 0.2))
-        self.wait(2)
+        self.esperar_hasta(28)
         self.play(FadeIn(linea4, shift=RIGHT * 0.2))
-        self.wait(2)
+        self.esperar_hasta(34)
 
         mensaje = Text(
             "La misma partición entrega\ndos números distintos:\n"
@@ -383,7 +339,7 @@ class SumaDeAportes(EscenaG6):
         ajustar(mensaje, 5.8)
         mensaje.move_to(RIGHT * 3.75 + DOWN * 2.55)
         self.play(FadeIn(mensaje, shift=UP * 0.15))
-        self.wait(3)
+        self.finalizar()
 
 
 # =============================================================================
@@ -393,7 +349,6 @@ class Refinamiento(EscenaG6):
     """n = 6 -> 12 -> 24: la suma con signo tiende a -6 y el area a 46/3."""
 
     def construct(self):
-        self.add(pie())
         self.play(Write(titulo("Refinar la partición:  n → ∞")))
 
         ejes = crear_ejes(x_length=6.6, y_length=4.5, shift=LEFT * 3.3).shift(DOWN * 0.4)
@@ -434,7 +389,7 @@ class Refinamiento(EscenaG6):
         ajustar(nota_limite, 5.5)
 
         self.play(FadeIn(cabeza), FadeIn(fila6))
-        self.wait(2)
+        self.esperar_hasta(6)
 
         # n = 12
         r12 = rectangulos_punto_medio(ejes, 12)
@@ -444,7 +399,7 @@ class Refinamiento(EscenaG6):
             FadeIn(fila12),
             run_time=2.5,
         )
-        self.wait(2)
+        self.esperar_hasta(12)
 
         # n = 24
         r24 = rectangulos_punto_medio(ejes, 24)
@@ -454,72 +409,90 @@ class Refinamiento(EscenaG6):
             FadeIn(fila24),
             run_time=2.5,
         )
-        self.wait(2)
+        self.esperar_hasta(19)
 
         self.play(FadeIn(limite, shift=UP * 0.15), FadeIn(nota_limite))
-        self.wait(3)
+        self.finalizar()
 
 
 # =============================================================================
 # ESCENA 8 - COMPARACION FINAL CON BARRAS
 # =============================================================================
+
 class ComparacionFinal(EscenaG6):
-    """Integral = A+ - A-  vs  Area = A+ + A-, con barras a escala."""
+    """Calcula las tres regiones antes de comparar la integral con el área."""
 
     def construct(self):
-        self.add(pie())
-        self.play(Write(titulo("Integral definida frente al área geométrica")))
+        self.play(Write(titulo("Valores exactos: integral y área")))
+        primitiva = mt(r"F(x)=\frac{x^3}{3}-4x,\qquad F'(x)=x^2-4", font_size=42)
+        primitiva.move_to(UP * 2.1)
+        descripcion = Text("Una función cuya derivada es f(x).", font_size=23, color=GREY_A)
+        descripcion.move_to(UP * 1.15)
+        self.play(Write(primitiva), FadeIn(descripcion))
+        self.esperar_hasta(10)
 
-        # Escala: A+ = 14/3, A- = 32/3  ->  unidades de pantalla
+        izq = mt(r"\int_{-3}^{-2}(x^2-4)\,dx=[F(x)]_{-3}^{-2}=\frac{7}{3}",
+                 font_size=37, color=COL_POS).move_to(UP * 0.05)
+        der = mt(r"\int_2^3(x^2-4)\,dx=[F(x)]_2^3=\frac{7}{3}",
+                 font_size=37, color=COL_POS).move_to(DOWN * 1.15)
+        positivo = mt(r"A^+=\frac{7}{3}+\frac{7}{3}=\frac{14}{3}",
+                      font_size=40, color=COL_POS).move_to(DOWN * 2.55)
+        self.play(Write(izq))
+        self.esperar_hasta(13)
+        self.play(Write(der))
+        self.esperar_hasta(16)
+        self.play(Write(positivo))
+        self.esperar_hasta(20)
+        self.play(FadeOut(VGroup(izq, der, positivo)), run_time=0.5)
+        central = mt(r"\int_{-2}^{2}(x^2-4)\,dx=[F(x)]_{-2}^{2}=-\frac{32}{3}",
+                     font_size=40, color=COL_NEG).move_to(UP * 0.05)
+        negativo = mt(r"A^-=\left|-\frac{32}{3}\right|=\frac{32}{3}",
+                      font_size=43, color=COL_NEG).move_to(DOWN * 1.45)
+        nota = Text("El área se toma sin signo.", font_size=23, color=GREY_A)
+        nota.move_to(DOWN * 2.6)
+        self.play(Write(central))
+        self.play(Write(negativo), FadeIn(nota))
+        self.esperar_hasta(28)
+        self.play(FadeOut(VGroup(primitiva, descripcion, central, negativo, nota)), run_time=0.5)
+
         s = 0.36
-        ancho_pos = A_MAS * s          # ~1,68
-        ancho_area = (A_MAS + A_MENOS) * s     # ~5,52
+        ancho_pos = A_MAS * s
+        ancho_area = AREA_TOTAL * s
         x_neto = INTEGRAL * s
-        linea_base = Line([-4.5, -1.8, 0], [6.0, -1.8, 0], color=COL_EJE, stroke_width=2)
+        linea_base = Line([-4.5, -1.8, 0], [6, -1.8, 0], color=COL_EJE, stroke_width=2)
         origen = DashedLine([0, -1.95, 0], [0, 1.55, 0], color=COL_EJE)
         cero = mt("0", font_size=24).move_to([0.22, -1.55, 0])
-
-        # Etiquetas de las formulas
-        txt_area = mt(r"\text{\'Area} = A^{+} + A^{-} = \frac{46}{3} \approx 15{,}33",
-                      color=COL_AREA).scale(0.85)
-        txt_integral = mt(r"\int_{-3}^{3} f\,dx = A^{+} - A^{-} = -6",
-                          color=COL_INTEGRAL).scale(0.85)
-        txt_area.move_to(UP * 2.5)
-        txt_integral.move_to(DOWN * 2.55)
-
-        # --- Barra superior: AREA (verde + rojo hacia la derecha) ---
-        y_area = 1.15
-        barra_pos_area = barra_horizontal(0, ancho_pos, y_area, COL_POS)
-        barra_neg_area = barra_horizontal(ancho_pos, ancho_area, y_area, COL_NEG)
-        etq_pos_area = mt(r"A^{+}=14/3", font_size=27, color=COL_POS).next_to(barra_pos_area, UP, buff=0.16)
-        etq_neg_area = mt(r"A^{-}=32/3", font_size=27, color=COL_NEG).next_to(barra_neg_area, UP, buff=0.16)
-
-        # Integral: avanzar A+ y retroceder A- desde el extremo alcanzado.
+        integral = mt(r"I=\frac{14}{3}-\frac{32}{3}=-6", font_size=43, color=COL_INTEGRAL)
+        integral.move_to(DOWN * 2.6)
         avance = Arrow([0, -0.35, 0], [ancho_pos, -0.35, 0], buff=0, color=COL_POS)
         retroceso = Arrow([ancho_pos, -1.15, 0], [x_neto, -1.15, 0], buff=0, color=COL_NEG)
         enlace = DashedLine([ancho_pos, -0.35, 0], [ancho_pos, -1.15, 0], color=COL_EJE)
-        etq_avance = mt(r"+A^{+}", font_size=27, color=COL_POS).next_to(avance, UP, buff=0.1)
-        etq_retroceso = mt(r"-A^{-}", font_size=27, color=COL_NEG).next_to(retroceso, UP, buff=0.1)
+        etq_avance = mt(r"+A^+", font_size=27, color=COL_POS).next_to(avance, UP, buff=0.1)
+        etq_retroceso = mt(r"-A^-", font_size=27, color=COL_NEG).next_to(retroceso, UP, buff=0.1)
         neto = Dot([x_neto, -1.8, 0], color=COL_INTEGRAL, radius=0.09)
         marca = DashedLine([x_neto, -1.15, 0], [x_neto, -1.8, 0], color=COL_INTEGRAL)
         etq_neto = mt("-6", font_size=27, color=COL_INTEGRAL).move_to([x_neto - 0.4, -1.55, 0])
-
-        self.play(Create(linea_base), Create(origen), Write(cero))
-        self.play(Write(txt_area))
-        self.play(FadeIn(barra_pos_area), FadeIn(barra_neg_area), run_time=1.8)
-        self.play(FadeIn(etq_pos_area), FadeIn(etq_neg_area))
-        self.wait(2)
-
-        self.play(Write(txt_integral))
-        self.play(GrowArrow(avance), FadeIn(etq_avance), run_time=1.2)
+        self.play(Create(linea_base), Create(origen), Write(cero), run_time=0.7)
+        self.play(Write(integral))
+        self.play(GrowArrow(avance), FadeIn(etq_avance))
+        self.esperar_hasta(34)
         self.play(Create(enlace), GrowArrow(retroceso), FadeIn(etq_retroceso), run_time=1.5)
         self.play(GrowFromCenter(neto), Create(marca), FadeIn(etq_neto))
-        self.wait(1.5)
+        self.esperar_hasta(39)
 
-        conclusion = mt(r"A^{-} > 0 \;\Rightarrow\; A^{+} - A^{-} < A^{+} + A^{-}")
-        conclusion.scale(0.85).move_to(DOWN * 3.4)
+        area = mt(r"A_{\mathrm{total}}=\frac{14}{3}+\frac{32}{3}=\frac{46}{3}\approx15{,}33",
+                  font_size=39, color=COL_AREA).move_to(UP * 2.5)
+        barra_pos = barra_horizontal(0, ancho_pos, 1.15, COL_POS)
+        barra_neg = barra_horizontal(ancho_pos, ancho_area, 1.15, COL_NEG)
+        etq_pos = mt(r"A^+=14/3", font_size=27, color=COL_POS).next_to(barra_pos, UP, buff=0.16)
+        etq_neg = mt(r"A^-=32/3", font_size=27, color=COL_NEG).next_to(barra_neg, UP, buff=0.16)
+        self.play(Write(area))
+        self.play(FadeIn(barra_pos), FadeIn(barra_neg), FadeIn(etq_pos), FadeIn(etq_neg), run_time=1.5)
+        self.esperar_hasta(46)
+        conclusion = mt(r"A^->0\quad\Rightarrow\quad A^+-A^-<A^++A^-", font_size=35)
+        conclusion.move_to(DOWN * 3.4)
         self.play(Write(conclusion))
-        self.wait(3)
+        self.finalizar()
 
 
 # =============================================================================
@@ -529,7 +502,6 @@ class RespuestaCentral(EscenaG6):
     """Respuesta explicita y conexion con el concepto de integral."""
 
     def construct(self):
-        self.add(pie())
         pregunta = cuadro_pregunta(
             "¿Por qué una integral definida puede ser\n"
             "menor que el área geométrica total?"
@@ -566,51 +538,42 @@ class RespuestaCentral(EscenaG6):
         self.wait(1.5)
 
         final = Text(
-            "La integral definida es el límite de sumas con signo;\n"
+            "La integral definida es el límite de sumas con signo.\n"
             "coincide con el área solo si f no toma valores negativos.",
             font_size=21, color=GREY_A, line_spacing=1.15,
         ).to_edge(DOWN, buff=0.6)
         self.play(FadeIn(final, shift=UP * 0.15))
-        self.wait(3)
+        self.finalizar()
 
 
 # =============================================================================
 # ESCENA 10 - CREDITOS
 # =============================================================================
+
 class Creditos(EscenaG6):
-    """Fuentes, recursos externos y declaracion de IA."""
+    """Referencias y uso de IA, con el detalle completo en la ficha de entrega."""
 
     def construct(self):
         self.play(Write(titulo("Fuentes y recursos")))
-
         fuentes = VGroup(
-            Text("Apunte base: Introducción a la integral. MAT1188, 2026.",
-                 font_size=21, color=GREY_A),
-            Text("Stewart, J. Cálculo de una variable. 7ª ed. Cengage Learning.",
-                 font_size=21, color=GREY_A),
-            Text("Thomas, G. B. Cálculo. Una variable. 12ª ed. Pearson.",
-                 font_size=21, color=GREY_A),
-            Text("Documentación oficial de Manim Community (docs.manim.community).",
-                 font_size=21, color=GREY_A),
-        ).arrange(DOWN, buff=0.28, aligned_edge=LEFT)
-        ajustar(fuentes, 12.4)
-        fuentes.next_to(ORIGIN, UP, buff=0.6)
-
+            Text("Apunte: Introducción a la integral. MAT1188, 2026. Blackboard.", font_size=21, color=GREY_A),
+            Text("Stewart. Cálculo de una variable. 7ª ed. Cengage Learning.", font_size=21, color=GREY_A),
+            Text("Thomas, Weir y Hass. Cálculo. Una variable. 12ª ed. Pearson.", font_size=21, color=GREY_A),
+            Text("Manim Community 0.22.0: docs.manim.community", font_size=21, color=GREY_A),
+        ).arrange(DOWN, buff=0.25, aligned_edge=LEFT)
+        ajustar(fuentes, 12.4).move_to(UP * 1.2)
         ia = Text(
-            "Apoyo de IA: Codex (OpenAI), revisión de código y distribución visual.\n"
-            "Partes revisadas: escenas, cálculos y scripts de render.\n"
-            "Verificación: cálculos exactos, pruebas y revisión de renders.",
-            font_size=19, color=GREY_B, line_spacing=1.1,
+            "Claude (Anthropic): guía y borrador inicial del código.\n"
+            "Codex (OpenAI): revisión de código, guion, ficha y pruebas.\n"
+            "Comprobación: cálculos exactos, pruebas y revisión visual.\n"
+            "Referencias y declaración completa en la ficha de entrega.",
+            font_size=21, color=GREY_A, line_spacing=1.15,
         )
-        ajustar(ia, 12.4)
-        ia.to_edge(DOWN, buff=1.3)
-
-        despedida = Text("Gracias.", font_size=34, color=GOLD).to_edge(DOWN, buff=0.5)
-
-        self.play(LaggedStart(*[FadeIn(f, shift=UP * 0.15) for f in fuentes],
-                              lag_ratio=0.25))
-        self.wait(1.5)
-        self.play(FadeIn(ia, shift=UP * 0.15))
-        self.wait(1)
-        self.play(Write(despedida))
-        self.wait(3)
+        ajustar(ia, 12.4).move_to(DOWN * 1.3)
+        gracias = Text("Gracias.", font_size=32, color=GOLD).move_to(DOWN * 3.0)
+        self.play(LaggedStart(*[FadeIn(f) for f in fuentes], lag_ratio=0.2), run_time=1.5)
+        self.esperar_hasta(3.5)
+        self.play(FadeIn(ia))
+        self.esperar_hasta(7.5)
+        self.play(Write(gracias), run_time=0.7)
+        self.finalizar()

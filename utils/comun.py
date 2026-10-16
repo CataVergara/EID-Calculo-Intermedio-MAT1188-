@@ -1,5 +1,6 @@
 from manim import *
 import numpy as np
+from utils.guion import GUION
 
 # =============================================================================
 # 1. DATOS DEL EJEMPLO PRINCIPAL
@@ -286,7 +287,35 @@ def revisar(escena):
 
 
 class EscenaG6(Scene):
-    """Escena base: igual que Scene, pero revisa superposiciones en cada pausa."""
+    """Identifica la voz y permite sincronizar cada paso con el guion."""
+
+    def setup(self):
+        super().setup()
+        self.duracion_guion, voz = GUION[type(self).__name__]
+        self.add(pie(f"Voz: {voz} · {GRUPO} · MAT1188 · EID 2026"))
+
+    def esperar_hasta(self, segundo):
+        """Mantiene la escena hasta un segundo relativo a su propio inicio.
+
+        Si una animación ya sobrepasó el punto del guion, se avisa con un error
+        para evitar recortes o una duración final incorrecta.
+        """
+        fps = float(config.frame_rate)
+        diferencia = segundo - self.time
+        if diferencia < -1 / fps:
+            raise ValueError(
+                f"{type(self).__name__}: el paso termina en {self.time:.2f}s "
+                f"y supera el punto del guion de {segundo}s."
+            )
+        cuadros = round(diferencia * fps)
+        if cuadros > 0:
+            # La mínima fracción evita perder un cuadro por redondeo binario
+            # al convertir una pausa estática de segundos a cuadros en Manim.
+            self.wait((cuadros + 0.001) / fps)
+
+    def finalizar(self):
+        """Completa el tiempo reservado para esta escena en el guion."""
+        self.esperar_hasta(self.duracion_guion)
 
     def wait(self, *args, **kwargs):
         revisar(self)
