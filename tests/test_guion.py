@@ -10,11 +10,11 @@ from utils.guion import DURACION_TOTAL, GUION
 
 
 class GuionTest(unittest.TestCase):
-    def test_tiempos_de_voces_y_bloque_pendiente(self):
-        self.assertAlmostEqual(DURACION_TOTAL, 321)
+    def test_tiempos_de_las_tres_voces(self):
+        self.assertAlmostEqual(DURACION_TOTAL, 315)
         for nombre, esperado in (("Catalina Vergara", 87.6),
                                  ("Ignacio De Celis", 128.4),
-                                 ("Marcelo Santana", 105)):
+                                 ("Marcelo Santana", 99)):
             with self.subTest(voz=nombre):
                 self.assertAlmostEqual(sum(d for d, voz in GUION.values() if voz == nombre), esperado)
 

@@ -9,20 +9,20 @@
 - **Pregunta central:** *¿Por qué una integral definida puede ser menor que el área geométrica total?*
 
 ## Integrantes
-- CATALINA JAVIERA VERGARA ALARCON – GitHub: [@CataVergara](https://github.com/CataVergara)
-- IGNACIO ALEXANDER DE CELIS VALENCIA – GitHub: `IGNACIO ALEXANDER DE CELIS VALENCIA`
-- MARCELO FABIÁN SANTANA ASTORGA – GitHub: `MARCELO FABIÁN SANTANA ASTORGA`
+- CATALINA JAVIERA VERGARA ALARCON - GitHub: [@CataVergara](https://github.com/CataVergara)
+- IGNACIO ALEXANDER DE CELIS VALENCIA - GitHub: [@idecelis2017-hub](https://github.com/idecelis2017-hub)
+- MARCELO FABIÁN SANTANA ASTORGA - GitHub: [@cchelooo](https://github.com/cchelooo)
 
 ## Archivos principales
-- `utils/comun.py` – Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
+- `utils/comun.py` - Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
 - `scenes/escenas.py`: las diez escenas del video, con fórmulas, rótulos y pausas para el guion.
-- `utils/guion.py`: orden, duración de cada escena e identificación de las voces. El montaje actual dura 5:21.
-- `utils/edicion.py`: tomas elegidas y recorte de una repetición en la voz de Ignacio.
+- `utils/guion.py`: orden, duración de cada escena e identificación de las voces. El montaje actual dura 5:15.
+- `utils/edicion.py`: tomas elegidas y recortes de repeticiones en las voces de Ignacio y Marcelo.
 - `montar.py`: extrae y nivela las voces, las une con el video y prepara archivos separados para CapCut.
-- `README.md` – Este archivo.
-- `render.py` y `render.ps1` – Renderizan y ensamblan las diez escenas en orden narrativo.
-- [Guion del video](docs/guion.pdf) y [ficha de entrega](docs/MAT1188_EID_G06_2026.pdf): documentos incorporados por el equipo. Completar la ficha con los datos del video definitivo.
-- `media/output/MAT1188_EID_G06_2026.mp4` – Video generado localmente; los renders no se versionan.
+- `README.md` - Este archivo.
+- `render.py` y `render.ps1` - Renderizan y ensamblan las diez escenas en orden narrativo.
+- [Guion del video](docs/guion.pdf) y [ficha de entrega](docs/MAT1188_EID_G06_2026.pdf): documentos del montaje final. Las fuentes editables están en la misma carpeta. La sección 1 queda pendiente de confirmar en Blackboard.
+- `media/output/MAT1188_EID_G06_2026.mp4` - Video generado localmente; los renders no se versionan.
 
 ## Entorno y dependencias
 Python 3.13 y Manim Community 0.22.0. Las dependencias de Python están fijadas en `requirements.txt`.
@@ -66,17 +66,22 @@ Para unir renders existentes: `python render.py --quality qh --skip-render`.
 
 En PowerShell se puede usar el mismo flujo con `.\render.ps1 -Calidad qh`.
 
-**Montaje con las dos grabaciones disponibles:**
+**Montaje con las tres voces:**
 ```sh
-python montar.py --catalina "/ruta/catalina.mov" --ignacio "/ruta/ignacio.mp4" --salida media/output/montaje
+python montar.py \
+  --catalina "/ruta/catalina.mov" \
+  --ignacio "/ruta/ignacio.mp4" \
+  --marcelo-refinamiento "/ruta/marcelo_refinamiento.mp4" \
+  --marcelo-comparacion "/ruta/marcelo_comparacion.mp4" \
+  --marcelo-respuesta "/ruta/marcelo_respuesta.mp4" \
+  --marcelo-creditos "/ruta/marcelo_creditos.mp4" \
+  --salida media/output/montaje
 ```
 Ejecutar primero el render en `qh`. El montaje comprueba que las diez escenas tengan los tiempos actuales y estén en 1080p60, para evitar mezclar grabaciones con renders antiguos.
 
-Los archivos recibidos se usan únicamente como fuentes de audio. Sus imágenes no aparecen en el montaje. La salida incluye un borrador con las voces, el video sin sonido, una pista de voces alineada desde cero y las escenas y audios separados para CapCut. `Tiempos_CapCut.csv` indica sus posiciones. Las grabaciones y los renders permanecen fuera de Git.
+Los archivos recibidos se usan como fuentes de audio. La salida incluye `MAT1188_EID_G06_2026.mp4`, el video sin sonido, una pista de voces alineada desde cero y las escenas y audios separados para CapCut. `Tiempos_CapCut.csv` indica sus posiciones y si cada grabación está disponible. Si se omite algún archivo de Marcelo, la salida se identifica como borrador y señala las escenas pendientes. Las grabaciones y los renders permanecen fuera de Git.
 
-El bloque de Marcelo empieza en 3:36 y conserva los 105 segundos propuestos hasta recibir su grabación. El borrador contiene silencio en esa parte. Hay que incorporar la tercera voz y revisar su sincronización antes de entregar.
-
-Los recortes se fijan en `utils/edicion.py`. En la grabación recibida de Ignacio se omite de 152,45 a 153,60 segundos para reducir una repetición del setenta y cinco, conservando el final del número. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
+Los recortes se fijan en `utils/edicion.py` y corresponden a las grabaciones originales utilizadas. En Ignacio se reduce una repetición del setenta y cinco. En Marcelo se seleccionan las tomas completas y se conserva la frase correcta «aproximadamente quince coma treinta y tres», con el valor exacto 46/3 visible. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
 
 **Apoyos visuales:** los recuadros señalan el símbolo y el objeto que se están explicando. Permanecen visibles durante la explicación y se sustituyen al cambiar el foco. Se retiran junto con su contenido o al terminar la escena. El ancho, el punto muestra y la altura se conectan con un mismo rectángulo. Después se desarrolla el ejemplo de $x^*=2,5$, con altura y aporte $2,25$. Los cuatro aportes negativos se señalan uno a uno, junto con los signos de resta y suma y el valor absoluto. Los colores de $A^+$ y $A^-$ se mantienen en las fórmulas.
 
@@ -97,32 +102,28 @@ python -m unittest discover -s tests -v
   - Área geométrica total = $A^+ + A^- = \frac{46}{3}\approx 15,3333$
 
 ## Escenas del video
-1. **Portada** – Presentación, integrantes, tema y pregunta central.
-2. **TeoriaSigno** – ¿Por qué aparecen aportes positivos y negativos al sumar $f(x_i^*)\Delta x$?
-3. **TeoriaDefiniciones** – Diferencia entre integral definida ($A^+ - A^-$) y área geométrica ($A^++A^-$).
-4. **EjemploPrincipal** – $f(x)=x^2-4$ en $[-3,3]$: raíces, signo y regiones.
-5. **Rectangulos** – Suma de Riemann de punto medio con $n=6$: partición, $\Delta x$, puntos muestra y rectángulos.
-6. **SumaDeAportes** – Sumamos aportes: obtenemos $S_6 = -6,5$ (aprox. integral) vs área $15,5$.
-7. **Refinamiento** – $n=6 \to 12 \to 24$: $S_n \to -6$ y área $\to 46/3$. Muestra el límite de la suma de Riemann.
+1. **Portada** - Presentación, integrantes, tema y pregunta central.
+2. **TeoriaSigno** - ¿Por qué aparecen aportes positivos y negativos al sumar $f(x_i^*)\Delta x$?
+3. **TeoriaDefiniciones** - Diferencia entre integral definida ($A^+ - A^-$) y área geométrica ($A^++A^-$).
+4. **EjemploPrincipal** - $f(x)=x^2-4$ en $[-3,3]$: raíces, signo y regiones.
+5. **Rectangulos** - Suma de Riemann de punto medio con $n=6$: partición, $\Delta x$, puntos muestra y rectángulos.
+6. **SumaDeAportes** - Sumamos aportes: obtenemos $S_6 = -6,5$ (aprox. integral) vs área $15,5$.
+7. **Refinamiento** - $n=6 \to 12 \to 24$: $S_n \to -6$ y área $\to 46/3$. Muestra el límite de la suma de Riemann.
 8. **ComparacionFinal**: cálculo exacto de las tres regiones con una antiderivada, seguido de barras para el área y flechas para la integral.
-9. **RespuestaCentral** – Respuesta explícita a la pregunta central: $A^- > 0 \implies A^+-A^- < A^++A^-$.
-10. **Creditos** – Fuentes, recursos externos y declaración de IA.
+9. **RespuestaCentral** - Respuesta explícita a la pregunta central: $A^- > 0 \implies A^+-A^- < A^++A^-$.
+10. **Creditos** - Fuentes, recursos externos y declaración de IA.
 
 ## Fuentes y recursos externos
-- Apunte base: *Introducción a la integral*. MAT1188 – Cálculo Intermedio, 2026.
-- Stewart, J. *Cálculo de una variable: Trascendentes tempranas*. 7ª ed. Cengage Learning.
-- Thomas, G. B. et al. *Cálculo: Una variable*. 12ª ed. Pearson.
-- Manim Community. Documentación oficial: [docs.manim.community](https://docs.manim.community/).
+El [registro de referencias y apoyo de IA](docs/REFERENCIAS.md) contiene el apunte, las ediciones y enlaces verificados de Stewart y Thomas, los recursos de Manim y FFmpeg, y el uso de Claude, Codex y Whisper. Incluye las páginas que el equipo debe repasar antes de la defensa. Las voces provienen de las grabaciones de los tres integrantes.
 
-## Declaración de IA
-El equipo declara el apoyo de Claude (Anthropic) en la guía de trabajo y el borrador inicial del código, y de Codex (OpenAI) en la revisión del código, las escenas, el guion, la ficha, las pruebas y el montaje con FFmpeg. La ficha contiene el detalle de usos y verificación y debe actualizarse con el montaje final. Las grabaciones deben realizarse con las voces de los tres integrantes.
+La [revisión de la entrega](docs/REVISION_ENTREGA.md) compara los cuatro documentos del curso y deja indicados los datos que requieren confirmación. La declaración de IA no necesita leerse en voz alta. Los créditos se muestran en pantalla y el registro completo queda enlazado aquí y en la ficha.
 
 ## Notas técnicas
 - Los cálculos ($A^+, A^-, \int, \text{área}$) están centralizados en `utils/comun.py` para asegurar coherencia entre escenas.
 - Se emplea suma de Riemann de **punto medio** (transparente, evita ambigüedad y es fácil de visualizar).
 - La partición se refina $n=6,12,24$ hasta aproximar a los valores exactos $-6$ y $46/3\approx 15,33$, mostrando el proceso de límite.
 - Escalas y etiquetas visibles. Diferenciación clara entre rectángulos rojos/verde para enfatizar aportes con signo.
-- La rúbrica exige un video de 4 a 6 minutos con las tres voces. `docs/guion.pdf` conserva la propuesta inicial de 5:15. Los tiempos de Catalina e Ignacio se ajustaron a sus grabaciones y el montaje actual dura 5:21. Falta la voz de Marcelo.
+- La rúbrica exige un video de 4 a 6 minutos con las tres voces. El montaje completo dura 5:15, con los tiempos del guion ajustados a las grabaciones.
 - Las pausas se distribuyen entre los pasos de cada explicación con `esperar_hasta()`. `finalizar()` completa el tiempo reservado y avisa si una escena lo sobrepasa. Los tiempos se cuentan desde el inicio de cada escena.
 - Antes de modificar los tiempos, ensayar las voces y actualizar `utils/guion.py` y los puntos de pausa afectados. La duración propuesta no sustituye la revisión del montaje con audio.
 - El render utiliza `utils/comun.py` y `scenes/escenas.py`.
@@ -139,6 +140,6 @@ El equipo declara el apoyo de Claude (Anthropic) en la guía de trabajo y el bor
 | Rectangulos | 2:01,20 | 2:37,95 | 36,75 s | Ignacio |
 | SumaDeAportes | 2:37,95 | 3:36 | 58,05 s | Ignacio |
 | Refinamiento | 3:36 | 4:01 | 25 s | Marcelo |
-| ComparacionFinal | 4:01 | 4:51 | 50 s | Marcelo |
-| RespuestaCentral | 4:51 | 5:11 | 20 s | Marcelo |
-| Creditos | 5:11 | 5:21 | 10 s | Marcelo |
+| ComparacionFinal | 4:01 | 4:45 | 44 s | Marcelo |
+| RespuestaCentral | 4:45 | 5:03 | 18 s | Marcelo |
+| Creditos | 5:03 | 5:15 | 12 s | Marcelo |

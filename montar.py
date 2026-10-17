@@ -1,4 +1,4 @@
-"""Monta los renders 1080p60 con las dos voces disponibles mediante FFmpeg."""
+"""Monta los renders 1080p60 con las grabaciones originales mediante FFmpeg."""
 
 import argparse
 import csv
@@ -38,21 +38,23 @@ def unir(entradas, salida, registro):
 
 
 def preparar_voz(nombre, fuente, destino, trabajo):
-    escenas = [e for e, (_, voz) in GUION.items() if voz == nombre and e in RECORTES]
+    escenas = [e for e, (_, voz) in GUION.items() if voz == nombre and e in RECORTES
+               and (not isinstance(fuente, dict) or e in fuente)]
     recortados = []
     for escena in escenas:
+        original = fuente[escena] if isinstance(fuente, dict) else fuente
         piezas = []
         for i, (inicio, fin) in enumerate(RECORTES[escena]):
             pieza = trabajo / f"{escena}_{i}_toma.wav"
             duracion = fin - inicio
-            ffmpeg(["-i", fuente, "-map", "0:a:0", "-vn", "-af",
+            ffmpeg(["-i", original, "-map", "0:a:0", "-vn", "-af",
                     f"atrim=start={inicio}:end={fin},asetpts=PTS-STARTPTS,highpass=f=65,"
                     f"afade=t=in:d=0.012,afade=t=out:st={duracion-0.012:.6f}:d=0.012",
                     "-ar", SR, "-ac", "2", "-c:a", "pcm_s16le", pieza],
                    trabajo / f"{escena}_{i}_toma.log")
             with wave.open(str(pieza)) as audio:
                 if audio.getnframes() != round(duracion * SR):
-                    raise ValueError(f"Grabación incompleta para {escena}: {fuente}")
+                    raise ValueError(f"Grabación incompleta para {escena}: {original}")
             piezas.append(pieza)
         recortado = trabajo / f"{escena}_recorte.wav"
         unir(piezas, recortado, trabajo / f"{escena}_unir.log")
@@ -110,6 +112,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--catalina", required=True, type=Path)
     parser.add_argument("--ignacio", required=True, type=Path)
+    for parte in ("refinamiento", "comparacion", "respuesta", "creditos"):
+        parser.add_argument(f"--marcelo-{parte}", type=Path)
     parser.add_argument("--videos", type=Path, default=ROOT / "media/videos/escenas/1080p60")
     parser.add_argument("--salida", type=Path, default=ROOT / "media/output/montaje")
     parser.add_argument("--solo-audio", action="store_true")
@@ -119,11 +123,21 @@ def main():
         if shutil.which(programa) is None:
             raise RuntimeError(f"Se necesita {programa} en el PATH.")
     fuentes = {"Catalina Vergara": args.catalina.resolve(), "Ignacio De Celis": args.ignacio.resolve()}
+    marcelo = {escena: archivo.resolve() for escena, archivo in (
+        ("Refinamiento", args.marcelo_refinamiento),
+        ("ComparacionFinal", args.marcelo_comparacion),
+        ("RespuestaCentral", args.marcelo_respuesta),
+        ("Creditos", args.marcelo_creditos),
+    ) if archivo is not None}
+    if marcelo:
+        fuentes["Marcelo Santana"] = marcelo
+    originales = [archivo for fuente in fuentes.values()
+                  for archivo in (fuente.values() if isinstance(fuente, dict) else (fuente,))]
     salida = args.salida.resolve()
-    for fuente in (*fuentes.values(), args.videos.resolve()):
+    for fuente in (*originales, args.videos.resolve()):
         if fuente.is_relative_to(salida):
             raise ValueError("La carpeta de salida debe estar separada de los originales.")
-    for fuente in fuentes.values():
+    for fuente in originales:
         if not fuente.is_file():
             raise FileNotFoundError(fuente)
     if not args.solo_audio:
@@ -135,6 +149,8 @@ def main():
     for nombre, fuente in fuentes.items():
         print(f"Preparando {nombre}...", flush=True)
         pistas.update(preparar_voz(nombre, fuente, audios, trabajo))
+    disponibles = set(pistas)
+    pendientes = [escena for escena in GUION if escena not in disponibles]
     for i, (escena, (duracion, _)) in enumerate(GUION.items(), 1):
         if escena not in pistas:
             archivo = trabajo / f"{i:02d}_{escena}_voz_pendiente.wav"
@@ -153,7 +169,7 @@ def main():
         inicio = 0
         for escena, (duracion, voz) in GUION.items():
             writer.writerow([escena, voz, round(inicio, 3), duracion,
-                             "disponible" if escena in RECORTES else "pendiente"])
+                             "disponible" if escena in disponibles else "pendiente"])
             inicio += duracion
     if args.solo_audio:
         print(f"Audios preparados: {audios}")
@@ -164,12 +180,13 @@ def main():
     clips.mkdir(exist_ok=True)
     for i, escena in enumerate(GUION, 1):
         shutil.copy2(args.videos / f"{escena}.mp4", clips / f"{i:02d}_{escena}.mp4")
-    final = salida / "BORRADOR_mejorado_falta_voz_Marcelo.mp4"
+    final = salida / ("BORRADOR_faltan_voces.mp4" if pendientes else "MAT1188_EID_G06_2026.mp4")
     ffmpeg(["-i", base, "-i", track, "-map", "0:v:0", "-map", "1:a:0",
             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", SR,
             "-t", DURACION_TOTAL, "-movflags", "+faststart", final], trabajo / "montaje.log")
     print(f"Montaje generado: {final}")
-    print("Falta incorporar la voz de Marcelo. Ver Tiempos_CapCut.csv.")
+    if pendientes:
+        print("Faltan grabaciones: " + ", ".join(pendientes))
 
 
 if __name__ == "__main__":

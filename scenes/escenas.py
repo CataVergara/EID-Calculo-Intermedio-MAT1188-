@@ -495,7 +495,7 @@ class Refinamiento(EscenaG6):
         ajustar(nota_limite, 5.5)
 
         self.play(FadeIn(cabeza), FadeIn(fila6))
-        self.esperar_hasta(6)
+        self.esperar_hasta(7.1)
 
         # n = 12
         r12 = rectangulos_punto_medio(ejes, 12)
@@ -506,7 +506,7 @@ class Refinamiento(EscenaG6):
             run_time=2.5,
         )
         self.resaltar(fila12, color=GOLD)
-        self.esperar_hasta(12)
+        self.esperar_hasta(10.5)
 
         # n = 24
         r24 = rectangulos_punto_medio(ejes, 24)
@@ -517,10 +517,15 @@ class Refinamiento(EscenaG6):
             run_time=2.5,
         )
         self.resaltar(fila24, color=GOLD)
-        self.esperar_hasta(19)
+        self.esperar_hasta(14)
 
         self.resaltar(limite, color=GOLD, run_time=1,
                       animaciones=(FadeIn(limite, shift=UP * 0.15), FadeIn(nota_limite)))
+        self.resaltar(limite[1], color=COL_INTEGRAL, run_time=0.6)
+        self.esperar_hasta(17.1)
+        self.resaltar(limite[2], color=COL_AREA)
+        self.esperar_hasta(21.2)
+        self.resaltar(limite[0], nota_limite, color=GOLD)
         self.finalizar()
 
 
@@ -533,12 +538,15 @@ class ComparacionFinal(EscenaG6):
 
     def construct(self):
         self.play(Write(titulo("Valores exactos: integral y área")), run_time=1)
-        primitiva = mt(r"F(x)=\frac{x^3}{3}-4x,\qquad F'(x)=x^2-4", font_size=42)
+        primitiva = mt(r"F(x)=\frac{x^3}{3}-4x,", r"\qquad", r"F'(x)=x^2-4", font_size=42)
         primitiva.move_to(UP * 2.1)
         descripcion = Text("Una función cuya derivada es f(x).", font_size=23, color=GREY_A)
         descripcion.move_to(UP * 1.15)
-        self.play(Write(primitiva), FadeIn(descripcion))
-        self.esperar_hasta(10)
+        self.play(Write(primitiva), FadeIn(descripcion), run_time=2)
+        self.esperar_hasta(4.5)
+        self.resaltar(primitiva[2], color=COL_CURVA)
+        self.esperar_hasta(8.8)
+        self.resaltar(primitiva[0], color=GOLD)
 
         izq = mt(r"\int_{-3}^{-2}(x^2-4)\,dx=[F(x)]_{-3}^{-2}=\frac{7}{3}",
                  font_size=37, color=COL_POS).move_to(UP * 0.05)
@@ -546,15 +554,13 @@ class ComparacionFinal(EscenaG6):
                  font_size=37, color=COL_POS).move_to(DOWN * 1.15)
         positivo = mt(r"A^+=\frac{7}{3}+\frac{7}{3}=\frac{14}{3}",
                       font_size=40, color=COL_POS).move_to(DOWN * 2.55)
-        self.play(Write(izq))
-        self.esperar_hasta(13)
-        self.play(Write(der))
-        self.esperar_hasta(16)
-        self.play(Write(positivo), run_time=1)
-        self.esperar_hasta(17.3)
-        self.resaltar(positivo, color=COL_POS)
-        self.esperar_hasta(20)
-        self.quitar_resaltado(run_time=0.5,
+        self.esperar_hasta(19)
+        self.resaltar(izq, color=COL_POS, run_time=1, animaciones=(Write(izq),))
+        self.resaltar(izq, der, color=COL_POS, run_time=1, animaciones=(Write(der),))
+        self.esperar_hasta(23.1)
+        self.resaltar(positivo, color=COL_POS, run_time=1, animaciones=(Write(positivo),))
+        self.esperar_hasta(25.5)
+        self.quitar_resaltado(run_time=0.4,
                              animaciones=(FadeOut(VGroup(izq, der, positivo)),))
         central = mt(r"\int_{-2}^{2}(x^2-4)\,dx=[F(x)]_{-2}^{2}=-\frac{32}{3}",
                      font_size=40, color=COL_NEG).move_to(UP * 0.05)
@@ -562,12 +568,11 @@ class ComparacionFinal(EscenaG6):
                       font_size=43, color=COL_NEG).move_to(DOWN * 1.45)
         nota = Text("El área se toma sin signo.", font_size=23, color=GREY_A)
         nota.move_to(DOWN * 2.6)
-        self.play(Write(central), run_time=1)
-        self.play(Write(negativo), FadeIn(nota), run_time=1)
-        self.esperar_hasta(24)
-        self.resaltar(negativo, color=COL_NEG)
-        self.esperar_hasta(28)
-        self.quitar_resaltado(run_time=0.5,
+        self.play(Write(central), run_time=0.7)
+        self.resaltar(negativo, color=COL_NEG, run_time=0.7,
+                      animaciones=(Write(negativo), FadeIn(nota)))
+        self.esperar_hasta(32.2)
+        self.quitar_resaltado(run_time=0.4,
                              animaciones=(FadeOut(VGroup(primitiva, descripcion, central, negativo, nota)),))
 
         s = 0.36
@@ -587,13 +592,12 @@ class ComparacionFinal(EscenaG6):
         neto = Dot([x_neto, -1.8, 0], color=COL_INTEGRAL, radius=0.09)
         marca = DashedLine([x_neto, -1.15, 0], [x_neto, -1.8, 0], color=COL_INTEGRAL)
         etq_neto = mt("-6", font_size=27, color=COL_INTEGRAL).move_to([x_neto - 0.4, -1.55, 0])
-        self.play(Create(linea_base), Create(origen), Write(cero), run_time=0.7)
-        self.play(Write(integral))
-        self.play(GrowArrow(avance), FadeIn(etq_avance))
-        self.esperar_hasta(34)
-        self.play(Create(enlace), GrowArrow(retroceso), FadeIn(etq_retroceso), run_time=1.5)
-        self.play(GrowFromCenter(neto), Create(marca), FadeIn(etq_neto))
-        self.esperar_hasta(39)
+        self.play(Create(linea_base), Create(origen), Write(cero), run_time=0.6)
+        self.resaltar(integral, color=COL_INTEGRAL, run_time=0.8, animaciones=(Write(integral),))
+        self.play(GrowArrow(avance), FadeIn(etq_avance), run_time=0.6)
+        self.play(Create(enlace), GrowArrow(retroceso), FadeIn(etq_retroceso), run_time=0.8)
+        self.play(GrowFromCenter(neto), Create(marca), FadeIn(etq_neto), run_time=0.4)
+        self.esperar_hasta(36.7)
 
         area = mt(r"A_{\mathrm{total}}=\frac{14}{3}+\frac{32}{3}=\frac{46}{3}\approx15{,}33",
                   font_size=39, color=COL_AREA).move_to(UP * 2.5)
@@ -601,12 +605,12 @@ class ComparacionFinal(EscenaG6):
         barra_neg = barra_horizontal(ancho_pos, ancho_area, 1.15, COL_NEG)
         etq_pos = mt(r"A^+=14/3", font_size=27, color=COL_POS).next_to(barra_pos, UP, buff=0.16)
         etq_neg = mt(r"A^-=32/3", font_size=27, color=COL_NEG).next_to(barra_neg, UP, buff=0.16)
-        self.play(Write(area))
-        self.play(FadeIn(barra_pos), FadeIn(barra_neg), FadeIn(etq_pos), FadeIn(etq_neg), run_time=1.5)
-        self.esperar_hasta(46)
+        self.resaltar(area, color=COL_AREA, run_time=0.7, animaciones=(Write(area),))
+        self.play(FadeIn(barra_pos), FadeIn(barra_neg), FadeIn(etq_pos), FadeIn(etq_neg), run_time=0.7)
+        self.esperar_hasta(41.4)
         conclusion = mt(r"A^->0\quad\Rightarrow\quad A^+-A^-<A^++A^-", font_size=35)
         conclusion.move_to(DOWN * 3.4)
-        self.play(Write(conclusion))
+        self.resaltar(conclusion, color=WHITE, run_time=0.7, animaciones=(Write(conclusion),))
         self.finalizar()
 
 
@@ -622,8 +626,7 @@ class RespuestaCentral(EscenaG6):
             "menor que el área geométrica total?"
         )
         pregunta.to_edge(UP, buff=0.4)
-        self.play(FadeIn(pregunta, scale=0.95))
-        self.wait(1.5)
+        self.play(FadeIn(pregunta, scale=0.95), run_time=0.6)
 
         respuestas = VGroup(
             Text("Porque la integral suma contribuciones con signo:",
@@ -634,14 +637,15 @@ class RespuestaCentral(EscenaG6):
         ).arrange(DOWN, buff=0.28)
         ajustar(respuestas, 12.4)
         respuestas.move_to(UP * 0.35)
-        for i, r in enumerate(respuestas):
-            self.play(FadeIn(r, shift=RIGHT * 0.2))
-            self.wait(1.2)
+        for segundo, r in zip((0.8, 1.6, 4.3), respuestas):
+            self.esperar_hasta(segundo)
+            self.resaltar(r, color=r.get_color(), run_time=0.6,
+                          animaciones=(FadeIn(r, shift=RIGHT * 0.2),))
 
-        clave = mt(r"A^{+} - A^{-} < A^{+} + A^{-} \quad (A^{-} > 0)")
+        clave = mt(r"A^{+}-A^{-}", "<", r"A^{+}+A^{-}", r"\quad(A^{-}>0)")
         clave.scale(0.95).next_to(respuestas, DOWN, buff=0.55)
-        self.play(Write(clave))
-        self.wait(1.5)
+        self.esperar_hasta(8.6)
+        self.resaltar(clave[3], color=GOLD, run_time=1, animaciones=(Write(clave),))
 
         cierre = Text(
             "En nuestro ejemplo:  −6  <  15,33   →   la integral es menor.",
@@ -649,15 +653,18 @@ class RespuestaCentral(EscenaG6):
         )
         ajustar(cierre, 12.4)
         cierre.to_edge(DOWN, buff=1.5)
-        self.play(FadeIn(cierre, shift=UP * 0.2))
-        self.wait(1.5)
+        self.esperar_hasta(11.8)
+        self.resaltar(cierre, color=GOLD, run_time=0.7,
+                      animaciones=(FadeIn(cierre, shift=UP * 0.2),))
 
         final = Text(
-            "La integral definida es el límite de sumas con signo.\n"
-            "coincide con el área solo si f no toma valores negativos.",
+            "Si A⁻ = 0, ambas cantidades coinciden.\n"
+            "La integral es el límite de sumas con signo.",
             font_size=21, color=GREY_A, line_spacing=1.15,
         ).to_edge(DOWN, buff=0.6)
-        self.play(FadeIn(final, shift=UP * 0.15))
+        self.esperar_hasta(13.2)
+        self.resaltar(final, color=WHITE, run_time=0.8,
+                      animaciones=(FadeIn(final, shift=UP * 0.15),))
         self.finalizar()
 
 
@@ -672,8 +679,8 @@ class Creditos(EscenaG6):
         self.play(Write(titulo("Fuentes y recursos")), run_time=1)
         fuentes = VGroup(
             Text("Apunte: Introducción a la integral. MAT1188, 2026. Blackboard.", font_size=21, color=GREY_A),
-            Text("Stewart. Cálculo de una variable. 7ª ed. Cengage Learning.", font_size=21, color=GREY_A),
-            Text("Thomas, Weir y Hass. Cálculo. Una variable. 12ª ed. Pearson.", font_size=21, color=GREY_A),
+            Text("Stewart. Cálculo de una variable. 7ª ed. Cengage, 2012.", font_size=21, color=GREY_A),
+            Text("Thomas, Weir y Hass. Cálculo. Una variable. 12ª ed. Pearson, 2010.", font_size=21, color=GREY_A),
             Text("Manim Community 0.22.0: docs.manim.community", font_size=21, color=GREY_A),
             Text("FFmpeg: recortes de voz, volumen y montaje. ffmpeg.org", font_size=21, color=GREY_A),
         ).arrange(DOWN, buff=0.25, aligned_edge=LEFT)
@@ -681,6 +688,7 @@ class Creditos(EscenaG6):
         ia = Text(
             "Claude (Anthropic): guía y borrador inicial del código.\n"
             "Codex (OpenAI): revisión de código, guion, ficha, pruebas y montaje.\n"
+            "Whisper (OpenAI): transcripción para localizar tomas y recortes.\n"
             "Comprobación: cálculos exactos, pruebas y revisión visual.\n"
             "Referencias y declaración completa en la ficha de entrega.",
             font_size=21, color=GREY_A, line_spacing=1.15,
