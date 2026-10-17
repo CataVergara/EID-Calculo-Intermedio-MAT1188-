@@ -40,7 +40,7 @@ No se exige leer la declaración en voz alta. Se mantiene la información en los
 - Se identificaron las cuentas reales de GitHub de los tres integrantes.
 - Se completaron los años, enlaces y apartados de Stewart y Thomas. Se comprobaron en los propios libros. El equipo aún debe repasar esos apartados.
 
-- Se separó «A más» de su definición con una pausa breve. Se completó «bajo el eje» reutilizando la palabra de la misma grabación.
+- Se separó «A más» de su definición con una pausa breve. Se conserva la expresión original «bajo él».
 - Los rótulos de altura y aporte usan LaTeX, para mostrar el punto muestra como $x_i^{*}$.
 
 La sección 1 fue confirmada por Marcelo y está incorporada en la ficha.

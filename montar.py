@@ -64,23 +64,9 @@ def preparar_voz(nombre, fuente, destino, trabajo):
                 parametros = audio.getparams()
                 contenido = audio.readframes(audio.getnframes())
             insertos = []
-            for i, inserto in enumerate(INSERTOS[escena]):
+            for inserto in INSERTOS[escena]:
                 duracion = duracion_inserto(inserto)
-                if "silencio" in inserto:
-                    agregado = bytes(round(duracion * SR) * 4)
-                else:
-                    inicio, fin = inserto["original"]
-                    palabra = trabajo / f"{escena}_{i}_palabra.wav"
-                    ffmpeg(["-i", original, "-map", "0:a:0", "-vn", "-af",
-                            f"atrim=start={inicio}:end={fin},asetpts=PTS-STARTPTS,"
-                            f"highpass=f=65,afade=t=in:d=0.008,"
-                            f"afade=t=out:st={duracion-0.008:.6f}:d=0.008",
-                            "-ar", SR, "-ac", "2", "-c:a", "pcm_s16le", palabra],
-                           trabajo / f"{escena}_{i}_palabra.log")
-                    with wave.open(str(palabra)) as audio:
-                        agregado = audio.readframes(audio.getnframes())
-                    if len(agregado) != round(duracion * SR) * 4:
-                        raise ValueError(f"Palabra incompleta para {escena}")
+                agregado = bytes(round(duracion * SR) * 4)
                 insertos.append((inserto["posicion"], agregado))
             contenido = insertar_pcm(contenido, insertos, SR, 4)
             with wave.open(str(recortado), "wb") as audio:

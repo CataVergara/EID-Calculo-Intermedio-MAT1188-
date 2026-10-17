@@ -12,7 +12,7 @@ from utils.guion import GUION
 RECORTES = {
     "Portada": ((7.55, 18.20),),
     "TeoriaSigno": ((18.20, 54.50),),
-    "TeoriaDefiniciones": ((54.50, 94.40),),
+    "TeoriaDefiniciones": ((54.50, 94.65),),
     "EjemploPrincipal": ((0.20, 33.80),),
     "Rectangulos": ((87.35, 124.10),),
     "SumaDeAportes": ((128.40, 152.45), (153.60, 187.10)),
@@ -23,12 +23,10 @@ RECORTES = {
     "Creditos": ((2.05, 11.85),),
 }
 
-# Posiciones dentro del recorte, antes de insertar nada. Los intervalos de
-# "original" siguen usando los segundos de la grabación de Catalina.
+# Posiciones dentro del recorte, antes de añadir las pausas.
 INSERTOS = {
     "TeoriaDefiniciones": (
         {"posicion": 5.47, "silencio": 0.25},  # Coma después de «A más».
-        {"posicion": 10.40, "original": (61.65, 61.94)},  # «bajo el eje».
     ),
 }
 
@@ -38,10 +36,7 @@ def duracion_audio(tramos):
 
 
 def duracion_inserto(inserto):
-    if "silencio" in inserto:
-        return inserto["silencio"]
-    inicio, fin = inserto["original"]
-    return fin - inicio
+    return inserto["silencio"]
 
 
 def duracion_editada(escena, tramos):

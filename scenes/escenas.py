@@ -692,7 +692,7 @@ class Creditos(EscenaG6):
             "Referencias y declaración completa en la ficha de entrega.",
             font_size=21, color=GREY_A, line_spacing=1.15,
         )
-        ajustar(ia, 12.4).move_to(DOWN * 1.3)
+        ajustar(ia, 12.4).move_to(DOWN * 1.3).align_to(fuentes, LEFT)
         gracias = Text("Gracias.", font_size=32, color=GOLD).move_to(DOWN * 3.0)
         self.play(LaggedStart(*[FadeIn(f) for f in fuentes], lag_ratio=0.2), run_time=1.5)
         self.esperar_hasta(3.5)
