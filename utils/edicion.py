@@ -12,7 +12,7 @@ from utils.guion import GUION
 RECORTES = {
     "Portada": ((7.55, 18.20),),
     "TeoriaSigno": ((18.20, 54.50),),
-    "TeoriaDefiniciones": ((54.50, 94.65),),
+    "TeoriaDefiniciones": ((54.50, 55.25), (55.60, 94.35)),
     "EjemploPrincipal": ((0.20, 33.80),),
     "Rectangulos": ((87.35, 124.10),),
     "SumaDeAportes": ((128.40, 152.45), (153.60, 187.10)),
@@ -26,7 +26,11 @@ RECORTES = {
 # Posiciones dentro del recorte, antes de añadir las pausas.
 INSERTOS = {
     "TeoriaDefiniciones": (
-        {"posicion": 5.47, "silencio": 0.25},  # Coma después de «A más».
+        {"posicion": 5.12, "silencio": 0.25},  # Coma después de «A más».
+        {"posicion": 17.12, "silencio": 0.30},  # «sea negativa. Para obtener».
+        {"posicion": 18.97, "silencio": 0.15},  # «la integral, restamos».
+        {"posicion": 20.35, "silencio": 0.15},  # «A menos, a A más».
+        {"posicion": 20.93, "silencio": 0.25},  # Antes de explicar el área total.
     ),
 }
 

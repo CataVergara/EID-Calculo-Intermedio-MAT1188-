@@ -11,7 +11,7 @@ class EdicionTest(unittest.TestCase):
         validar_recortes()
         for escena in RECORTES:
             self.assertLessEqual(duracion_editada(escena, RECORTES[escena]), GUION[escena][0])
-        self.assertAlmostEqual(duracion_editada("TeoriaDefiniciones", RECORTES["TeoriaDefiniciones"]), 40.40)
+        self.assertAlmostEqual(duracion_editada("TeoriaDefiniciones", RECORTES["TeoriaDefiniciones"]), 40.60)
         self.assertAlmostEqual(GUION["SumaDeAportes"][0] - duracion_editada("SumaDeAportes", RECORTES["SumaDeAportes"]), 0.5)
 
     def test_insertos_conservan_el_audio_y_las_posiciones_originales(self):
