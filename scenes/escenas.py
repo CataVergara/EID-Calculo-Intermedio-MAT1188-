@@ -144,14 +144,13 @@ class TeoriaSigno(EscenaG6):
                             color=COL_CURVA, stroke_width=5)
 
         self.esperar_hasta(8.2)
-        self.play(Create(ancho), FadeIn(etq_ancho),
-                  Circumscribe(suma[4], color=YELLOW), run_time=0.8)
+        self.resaltar(suma[4], color=YELLOW,
+                      animaciones=(Create(ancho), FadeIn(etq_ancho)))
         self.esperar_hasta(13.2)
-        self.play(FadeOut(VGroup(ancho, etq_ancho)),
-                  FadeIn(punto), FadeIn(etq_punto), run_time=0.6)
+        self.resaltar(etq_punto, color=GOLD, run_time=0.6, animaciones=(
+            FadeOut(VGroup(ancho, etq_ancho)), FadeIn(punto), FadeIn(etq_punto)))
         self.esperar_hasta(17.2)
-        self.play(Create(altura), Circumscribe(suma[3], color=COL_CURVA),
-                  run_time=0.8)
+        self.resaltar(suma[3], color=COL_CURVA, animaciones=(Create(altura),))
         self.esperar_hasta(19)
         self.resaltar(VGroup(suma[3], suma[4]), color=WHITE)
         self.esperar_hasta(22.8)
@@ -164,11 +163,12 @@ class TeoriaSigno(EscenaG6):
         indicador = Arrow(etq_neg.get_top(), ejes.c2p(-0.32, g(-0.32)),
                           buff=0.12, color=COL_NEG, stroke_width=2)
         self.esperar_hasta(24)
-        self.play(FadeIn(etq_pos), Circumscribe(rects[0], color=COL_POS),
-                  run_time=0.8)
+        self.resaltar(rects[0], color=COL_POS, animaciones=(FadeIn(etq_pos),))
         self.esperar_hasta(26)
-        self.play(FadeIn(etq_neg), GrowArrow(indicador),
-                  Circumscribe(rects[4], color=COL_NEG), run_time=0.8)
+        self.resaltar(rects[4], color=COL_NEG,
+                      animaciones=(FadeIn(etq_neg), GrowArrow(indicador)))
+        self.esperar_hasta(30)
+        self.resaltar(suma, condiciones, color=WHITE)
         self.finalizar()
 
 
@@ -200,7 +200,8 @@ class TeoriaDefiniciones(EscenaG6):
         self.esperar_hasta(10.6)
         self.play(FadeIn(nota_areas))
         self.esperar_hasta(17)
-        self.play(FadeOut(VGroup(a_mas, a_menos, nota_areas)), run_time=0.8)
+        self.quitar_resaltado(run_time=0.8,
+                             animaciones=(FadeOut(VGroup(a_mas, a_menos, nota_areas)),))
 
         integral = mt(r"I=\int_a^b f(x)\,dx=", r"A^+", "-", r"A^-",
                       font_size=46, color=COL_INTEGRAL)
@@ -233,7 +234,8 @@ class TeoriaDefiniciones(EscenaG6):
         comparacion.move_to(DOWN * 2.35)
         nota = Text("Si A⁻ = 0, ambas cantidades coinciden.", font_size=22, color=GREY_A)
         nota.move_to(DOWN * 3.1)
-        self.play(Write(comparacion), FadeIn(nota))
+        self.resaltar(comparacion, color=WHITE, run_time=2,
+                      animaciones=(Write(comparacion), FadeIn(nota)))
         self.finalizar()
 
 
@@ -289,10 +291,9 @@ class EjemploPrincipal(EscenaG6):
         etq_neg = mt(r"f < 0", color=COL_NEG).scale(0.75).move_to(ejes.c2p(0.9, -1.2))
         fondo_etq_neg = BackgroundRectangle(etq_neg, fill_opacity=0.85, buff=0.07)
 
-        self.play(FadeIn(regiones_ejem, run_time=2))
+        self.resaltar(regiones_ejem[0], regiones_ejem[2], color=COL_POS,
+                      run_time=2, animaciones=(FadeIn(regiones_ejem),))
         self.play(FadeIn(etq_pos), FadeIn(fondo_etq_neg), Write(etq_neg))
-        self.esperar_hasta(25.2)
-        self.resaltar(regiones_ejem[0], regiones_ejem[2], color=COL_POS)
         self.esperar_hasta(26.2)
         self.resaltar(regiones_ejem[1], color=COL_NEG)
         self.finalizar()
@@ -335,7 +336,7 @@ class Rectangulos(EscenaG6):
         ancho = DoubleArrow(ejes.c2p(2, -0.45), ejes.c2p(3, -0.45),
                             buff=0, color=YELLOW)
         self.esperar_hasta(9)
-        self.play(Create(ancho), Circumscribe(panel[1], color=YELLOW), run_time=0.8)
+        self.resaltar(panel[1], color=YELLOW, animaciones=(Create(ancho),))
         self.esperar_hasta(10.5)
 
         # Rectangulos uno a uno; altura f(x_i*) * dx
@@ -353,8 +354,8 @@ class Rectangulos(EscenaG6):
         altura_ejemplo = DashedLine(ejes.c2p(2.5, 0), ejes.c2p(2.5, f(2.5)),
                                     color=COL_CURVA, stroke_width=5)
         self.esperar_hasta(15.4)
-        self.play(Create(altura_ejemplo), Circumscribe(altura[0], color=COL_CURVA),
-                  run_time=0.8)
+        self.resaltar(altura[0], color=COL_CURVA,
+                      animaciones=(Create(altura_ejemplo),))
 
         ejemplo = VGroup(
             mt(r"x^*=2{,}5", font_size=28, color=GOLD),
@@ -367,10 +368,11 @@ class Rectangulos(EscenaG6):
         self.play(FadeIn(ejemplo[0]),
                   rects[5].animate.set_stroke(YELLOW, width=5).set_fill(opacity=0.7),
                   run_time=0.5)
-        self.play(FadeIn(ejemplo[1]), run_time=0.5)
+        self.resaltar(ejemplo[1], color=COL_CURVA, run_time=0.5,
+                      animaciones=(FadeIn(ejemplo[1]),))
         self.esperar_hasta(26)
-        self.play(FadeIn(ejemplo[2]),
-                  Circumscribe(altura[1], color=COL_POS), run_time=0.8)
+        self.resaltar(altura[1], ejemplo[2], color=COL_POS,
+                      animaciones=(FadeIn(ejemplo[2]),))
         self.finalizar()
 
 
@@ -414,7 +416,8 @@ class SumaDeAportes(EscenaG6):
         self.esperar_hasta(11.5)
         self.resaltar(linea1[5], color=COL_POS)
         self.esperar_hasta(14.2)
-        self.play(FadeIn(linea2, shift=RIGHT * 0.2))
+        self.resaltar(linea2, color=COL_NEG, run_time=1,
+                      animaciones=(FadeIn(linea2, shift=RIGHT * 0.2),))
         for segundo, rectangulo, termino in (
             (17, rects[1], linea2[0][1]),
             (20, rects[2], linea2[0][2]),
@@ -426,9 +429,11 @@ class SumaDeAportes(EscenaG6):
         self.esperar_hasta(31.1)
         self.resaltar(linea2[1][3], color=COL_NEG)
         self.esperar_hasta(33.35)
-        self.play(FadeIn(linea3, shift=RIGHT * 0.2))
+        self.resaltar(linea3, color=COL_INTEGRAL, run_time=1,
+                      animaciones=(FadeIn(linea3, shift=RIGHT * 0.2),))
         self.esperar_hasta(39.85)
-        self.play(FadeIn(linea4, shift=RIGHT * 0.2))
+        self.resaltar(linea4, color=COL_AREA, run_time=1,
+                      animaciones=(FadeIn(linea4, shift=RIGHT * 0.2),))
         self.esperar_hasta(45.85)
 
         mensaje = Text(
@@ -438,7 +443,8 @@ class SumaDeAportes(EscenaG6):
         )
         ajustar(mensaje, 5.8)
         mensaje.move_to(RIGHT * 3.75 + DOWN * 2.55)
-        self.play(FadeIn(mensaje, shift=UP * 0.15))
+        self.resaltar(linea3, linea4, color=WHITE, run_time=1,
+                      animaciones=(FadeIn(mensaje, shift=UP * 0.15),))
         self.finalizar()
 
 
@@ -513,7 +519,8 @@ class Refinamiento(EscenaG6):
         self.resaltar(fila24, color=GOLD)
         self.esperar_hasta(19)
 
-        self.play(FadeIn(limite, shift=UP * 0.15), FadeIn(nota_limite))
+        self.resaltar(limite, color=GOLD, run_time=1,
+                      animaciones=(FadeIn(limite, shift=UP * 0.15), FadeIn(nota_limite)))
         self.finalizar()
 
 
@@ -547,7 +554,8 @@ class ComparacionFinal(EscenaG6):
         self.esperar_hasta(17.3)
         self.resaltar(positivo, color=COL_POS)
         self.esperar_hasta(20)
-        self.play(FadeOut(VGroup(izq, der, positivo)), run_time=0.5)
+        self.quitar_resaltado(run_time=0.5,
+                             animaciones=(FadeOut(VGroup(izq, der, positivo)),))
         central = mt(r"\int_{-2}^{2}(x^2-4)\,dx=[F(x)]_{-2}^{2}=-\frac{32}{3}",
                      font_size=40, color=COL_NEG).move_to(UP * 0.05)
         negativo = mt(r"A^-=\left|-\frac{32}{3}\right|=\frac{32}{3}",
@@ -559,7 +567,8 @@ class ComparacionFinal(EscenaG6):
         self.esperar_hasta(24)
         self.resaltar(negativo, color=COL_NEG)
         self.esperar_hasta(28)
-        self.play(FadeOut(VGroup(primitiva, descripcion, central, negativo, nota)), run_time=0.5)
+        self.quitar_resaltado(run_time=0.5,
+                             animaciones=(FadeOut(VGroup(primitiva, descripcion, central, negativo, nota)),))
 
         s = 0.36
         ancho_pos = A_MAS * s

@@ -78,7 +78,7 @@ El bloque de Marcelo empieza en 3:36 y conserva los 105 segundos propuestos hast
 
 Los recortes se fijan en `utils/edicion.py`. En la grabación recibida de Ignacio se omite de 152,45 a 153,60 segundos para reducir una repetición del setenta y cinco, conservando el final del número. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
 
-**Apoyos visuales:** los recuadros señalan el símbolo y el objeto que se están explicando. El ancho, el punto muestra y la altura se conectan con un mismo rectángulo. Después se desarrolla el ejemplo de $x^*=2,5$, con altura y aporte $2,25$. Los cuatro aportes negativos se señalan uno a uno, y los signos de resta y suma y el valor absoluto reciben un énfasis breve. Los colores de $A^+$ y $A^-$ se mantienen en las fórmulas.
+**Apoyos visuales:** los recuadros señalan el símbolo y el objeto que se están explicando. Permanecen visibles durante la explicación y se sustituyen al cambiar el foco. Se retiran junto con su contenido o al terminar la escena. El ancho, el punto muestra y la altura se conectan con un mismo rectángulo. Después se desarrolla el ejemplo de $x^*=2,5$, con altura y aporte $2,25$. Los cuatro aportes negativos se señalan uno a uno, junto con los signos de resta y suma y el valor absoluto. Los colores de $A^+$ y $A^-$ se mantienen en las fórmulas.
 
 **Verificación de cálculos y ensamblado:**
 ```sh

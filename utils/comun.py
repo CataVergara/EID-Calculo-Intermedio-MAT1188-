@@ -292,6 +292,7 @@ class EscenaG6(Scene):
     def setup(self):
         super().setup()
         self.duracion_guion, voz = GUION[type(self).__name__]
+        self._resaltado = None
         self.add(pie(f"Voz: {voz} · {GRUPO} · MAT1188 · EID 2026"))
 
     def esperar_hasta(self, segundo):
@@ -315,15 +316,32 @@ class EscenaG6(Scene):
 
     def finalizar(self):
         """Completa el tiempo reservado para esta escena en el guion."""
+        if self._resaltado is not None:
+            self.esperar_hasta(self.duracion_guion - 0.25)
+            self.quitar_resaltado(run_time=0.25)
         self.esperar_hasta(self.duracion_guion)
 
-    def resaltar(self, *objetos, color=YELLOW, run_time=0.8):
-        """Rodea brevemente lo que se nombra, sin mover ni agrandar el contenido."""
-        self.play(*[
-            Circumscribe(objeto, color=color, buff=0.08,
-                         stroke_width=3, fade_out=True)
+    def resaltar(self, *objetos, color=YELLOW, run_time=0.8, animaciones=()):
+        """Mantiene el foco hasta el siguiente elemento o una retirada explícita.
+
+        run_time controla el dibujo del borde, no su permanencia. Las pausas
+        del guion mantienen el recuadro visible sin cambiar la sincronización.
+        """
+        nuevo = VGroup(*[
+            SurroundingRectangle(objeto, color=color, buff=0.08,
+                                 stroke_width=3)
             for objeto in objetos
-        ], run_time=run_time)
+        ]).set_z_index(10)
+        anterior = [FadeOut(self._resaltado)] if self._resaltado is not None else []
+        self.play(*anterior, Create(nuevo), *animaciones, run_time=run_time)
+        self._resaltado = nuevo
+
+    def quitar_resaltado(self, run_time=0.25, animaciones=()):
+        """Retira el foco junto con el contenido al que acompañaba."""
+        cambios = [FadeOut(self._resaltado)] if self._resaltado is not None else []
+        if cambios or animaciones:
+            self.play(*cambios, *animaciones, run_time=run_time)
+        self._resaltado = None
 
     def wait(self, *args, **kwargs):
         revisar(self)
