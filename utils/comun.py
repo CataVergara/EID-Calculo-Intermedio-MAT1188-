@@ -317,6 +317,14 @@ class EscenaG6(Scene):
         """Completa el tiempo reservado para esta escena en el guion."""
         self.esperar_hasta(self.duracion_guion)
 
+    def resaltar(self, *objetos, color=YELLOW, run_time=0.8):
+        """Rodea brevemente lo que se nombra, sin mover ni agrandar el contenido."""
+        self.play(*[
+            Circumscribe(objeto, color=color, buff=0.08,
+                         stroke_width=3, fade_out=True)
+            for objeto in objetos
+        ], run_time=run_time)
+
     def wait(self, *args, **kwargs):
         revisar(self)
         super().wait(*args, **kwargs)

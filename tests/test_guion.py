@@ -10,11 +10,13 @@ from utils.guion import DURACION_TOTAL, GUION
 
 
 class GuionTest(unittest.TestCase):
-    def test_cinco_minutos_quince_y_tres_bloques_iguales(self):
-        self.assertEqual(DURACION_TOTAL, 315)
-        for nombre in ("Catalina Vergara", "Ignacio De Celis", "Marcelo Santana"):
+    def test_tiempos_de_voces_y_bloque_pendiente(self):
+        self.assertAlmostEqual(DURACION_TOTAL, 321)
+        for nombre, esperado in (("Catalina Vergara", 87.6),
+                                 ("Ignacio De Celis", 128.4),
+                                 ("Marcelo Santana", 105)):
             with self.subTest(voz=nombre):
-                self.assertEqual(sum(d for d, voz in GUION.values() if voz == nombre), 105)
+                self.assertAlmostEqual(sum(d for d, voz in GUION.values() if voz == nombre), esperado)
 
     def test_escenas_completan_su_tiempo_sin_superponer_textos(self):
         with tempfile.TemporaryDirectory() as directorio, tempconfig({
