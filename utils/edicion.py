@@ -12,7 +12,7 @@ from utils.guion import GUION
 RECORTES = {
     "Portada": ((7.55, 18.20),),
     "TeoriaSigno": ((18.20, 54.50),),
-    "TeoriaDefiniciones": ((54.50, 94.65),),
+    "TeoriaDefiniciones": ((54.50, 94.40),),
     "EjemploPrincipal": ((0.20, 33.80),),
     "Rectangulos": ((87.35, 124.10),),
     "SumaDeAportes": ((128.40, 152.45), (153.60, 187.10)),
@@ -23,9 +23,46 @@ RECORTES = {
     "Creditos": ((2.05, 11.85),),
 }
 
+# Posiciones dentro del recorte, antes de insertar nada. Los intervalos de
+# "original" siguen usando los segundos de la grabación de Catalina.
+INSERTOS = {
+    "TeoriaDefiniciones": (
+        {"posicion": 5.47, "silencio": 0.25},  # Coma después de «A más».
+        {"posicion": 10.40, "original": (61.65, 61.94)},  # «bajo el eje».
+    ),
+}
+
 
 def duracion_audio(tramos):
     return sum(fin - inicio for inicio, fin in tramos)
+
+
+def duracion_inserto(inserto):
+    if "silencio" in inserto:
+        return inserto["silencio"]
+    inicio, fin = inserto["original"]
+    return fin - inicio
+
+
+def duracion_editada(escena, tramos):
+    return duracion_audio(tramos) + sum(
+        duracion_inserto(i) for i in INSERTOS.get(escena, ())
+    )
+
+
+def insertar_pcm(audio, insertos, frecuencia, bytes_por_frame):
+    """Intercala pausas o palabras sin desplazar los puntos de corte restantes."""
+    if len(audio) % bytes_por_frame:
+        raise ValueError("Audio PCM incompleto")
+    partes, anterior = [], 0
+    for segundo, contenido in insertos:
+        posicion = round(segundo * frecuencia) * bytes_por_frame
+        if not anterior <= posicion <= len(audio) or len(contenido) % bytes_por_frame:
+            raise ValueError("Inserto fuera del audio o con muestras incompletas")
+        partes.extend((audio[anterior:posicion], contenido))
+        anterior = posicion
+    partes.append(audio[anterior:])
+    return b"".join(partes)
 
 
 def validar_recortes(recortes=RECORTES, guion=GUION):
@@ -40,5 +77,12 @@ def validar_recortes(recortes=RECORTES, guion=GUION):
             if inicio < anterior:
                 raise ValueError(f"Recortes desordenados o superpuestos: {escena}")
             anterior = fin
-        if duracion_audio(tramos) > guion[escena][0] + 1 / 48000:
+        anterior = 0
+        for inserto in INSERTOS.get(escena, ()):
+            posicion, duracion = inserto["posicion"], duracion_inserto(inserto)
+            if (not all(isfinite(x) for x in (posicion, duracion)) or duracion <= 0
+                    or not anterior <= posicion <= duracion_audio(tramos)):
+                raise ValueError(f"Inserto no válido en {escena}")
+            anterior = posicion
+        if duracion_editada(escena, tramos) > guion[escena][0] + 1 / 48000:
             raise ValueError(f"La voz excede el tiempo de {escena}. Ajustar el guion.")

@@ -17,7 +17,7 @@
 - `utils/comun.py` - Cálculos exactos, estilo, funciones de graficación y constructores reutilizables.
 - `scenes/escenas.py`: las diez escenas del video, con fórmulas, rótulos y pausas para el guion.
 - `utils/guion.py`: orden, duración de cada escena e identificación de las voces. El montaje actual dura 5:15.
-- `utils/edicion.py`: tomas elegidas y recortes de repeticiones en las voces de Ignacio y Marcelo.
+- `utils/edicion.py`: tomas elegidas, recortes de repeticiones y ajustes de las pausas de voz.
 - `montar.py`: extrae y nivela las voces, las une con el video y prepara archivos separados para CapCut.
 - `README.md` - Este archivo.
 - `render.py` y `render.ps1` - Renderizan y ensamblan las diez escenas en orden narrativo.
@@ -81,7 +81,7 @@ Ejecutar primero el render en `qh`. El montaje comprueba que las diez escenas te
 
 Los archivos recibidos se usan como fuentes de audio. La salida incluye `MAT1188_EID_G06_2026.mp4`, el video sin sonido, una pista de voces alineada desde cero y las escenas y audios separados para CapCut. `Tiempos_CapCut.csv` indica sus posiciones y si cada grabación está disponible. Si se omite algún archivo de Marcelo, la salida se identifica como borrador y señala las escenas pendientes. Las grabaciones y los renders permanecen fuera de Git.
 
-Los recortes se fijan en `utils/edicion.py` y corresponden a las grabaciones originales utilizadas. En Ignacio se reduce una repetición del setenta y cinco. En Marcelo se seleccionan las tomas completas y se conserva la frase correcta «aproximadamente quince coma treinta y tres», con el valor exacto 46/3 visible. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
+Los recortes e insertos se fijan en `utils/edicion.py` y corresponden a las grabaciones originales utilizadas. En Catalina se añade una pausa de 0,25 segundos después de «A más» y se reutiliza su palabra «eje» para completar «bajo el eje». Se aprovecha el silencio final de la escena para conservar los tiempos del montaje. En Ignacio se reduce una repetición del setenta y cinco. En Marcelo se seleccionan las tomas completas y se conserva la frase correcta «aproximadamente quince coma treinta y tres», con el valor exacto 46/3 visible. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
 
 **Apoyos visuales:** los recuadros señalan el símbolo y el objeto que se están explicando. Permanecen visibles durante la explicación y se sustituyen al cambiar el foco. Se retiran junto con su contenido o al terminar la escena. El ancho, el punto muestra y la altura se conectan con un mismo rectángulo. Después se desarrolla el ejemplo de $x^*=2,5$, con altura y aporte $2,25$. Los cuatro aportes negativos se señalan uno a uno, junto con los signos de resta y suma y el valor absoluto. Los colores de $A^+$ y $A^-$ se mantienen en las fórmulas.
 
@@ -114,7 +114,7 @@ python -m unittest discover -s tests -v
 10. **Creditos** - Fuentes, recursos externos y declaración de IA.
 
 ## Fuentes y recursos externos
-El [registro de referencias y apoyo de IA](docs/REFERENCIAS.md) contiene el apunte, las ediciones y enlaces verificados de Stewart y Thomas, los recursos de Manim y FFmpeg, y el uso de Claude, Codex y Whisper. Incluye las páginas que el equipo debe repasar antes de la defensa. Las voces provienen de las grabaciones de los tres integrantes.
+El [registro de referencias y apoyo de IA](docs/REFERENCIAS.md) contiene el apunte, las ediciones y enlaces verificados de Stewart y Thomas, los recursos de Manim y FFmpeg, y el uso de Claude y Codex. Incluye las páginas que el equipo debe repasar antes de la defensa. Las voces provienen de las grabaciones de los tres integrantes.
 
 La [revisión de la entrega](docs/REVISION_ENTREGA.md) compara los cuatro documentos del curso y deja indicados los datos que requieren confirmación. La declaración de IA no necesita leerse en voz alta. Los créditos se muestran en pantalla y el registro completo queda enlazado aquí y en la ficha.
 

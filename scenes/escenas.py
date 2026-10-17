@@ -347,8 +347,8 @@ class Rectangulos(EscenaG6):
         )
 
         altura = VGroup(
-            Text("altura = f(x_i*)", font_size=21, color=YELLOW),
-            Text("aporte = f(x_i*) · Δx", font_size=21, color=YELLOW),
+            mt(r"\text{altura} = f(x_i^{*})", font_size=29, color=YELLOW),
+            mt(r"\text{aporte} = f(x_i^{*})\cdot\Delta x", font_size=29, color=YELLOW),
         ).arrange(DOWN, buff=0.18).next_to(panel, DOWN, buff=0.6)
         self.play(FadeIn(altura))
         altura_ejemplo = DashedLine(ejes.c2p(2.5, 0), ejes.c2p(2.5, f(2.5)),
@@ -688,7 +688,6 @@ class Creditos(EscenaG6):
         ia = Text(
             "Claude (Anthropic): guía y borrador inicial del código.\n"
             "Codex (OpenAI): revisión de código, guion, ficha, pruebas y montaje.\n"
-            "Whisper (OpenAI): transcripción para localizar tomas y recortes.\n"
             "Comprobación: cálculos exactos, pruebas y revisión visual.\n"
             "Referencias y declaración completa en la ficha de entrega.",
             font_size=21, color=GREY_A, line_spacing=1.15,

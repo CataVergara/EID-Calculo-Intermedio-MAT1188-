@@ -10,7 +10,8 @@ import subprocess
 import wave
 
 from render import ROOT, concatenate
-from utils.edicion import RECORTES, duracion_audio, validar_recortes
+from utils.edicion import (INSERTOS, RECORTES, duracion_editada,
+                          duracion_inserto, insertar_pcm, validar_recortes)
 from utils.guion import GUION, DURACION_TOTAL
 
 SR = 48000
@@ -58,6 +59,33 @@ def preparar_voz(nombre, fuente, destino, trabajo):
             piezas.append(pieza)
         recortado = trabajo / f"{escena}_recorte.wav"
         unir(piezas, recortado, trabajo / f"{escena}_unir.log")
+        if escena in INSERTOS:
+            with wave.open(str(recortado)) as audio:
+                parametros = audio.getparams()
+                contenido = audio.readframes(audio.getnframes())
+            insertos = []
+            for i, inserto in enumerate(INSERTOS[escena]):
+                duracion = duracion_inserto(inserto)
+                if "silencio" in inserto:
+                    agregado = bytes(round(duracion * SR) * 4)
+                else:
+                    inicio, fin = inserto["original"]
+                    palabra = trabajo / f"{escena}_{i}_palabra.wav"
+                    ffmpeg(["-i", original, "-map", "0:a:0", "-vn", "-af",
+                            f"atrim=start={inicio}:end={fin},asetpts=PTS-STARTPTS,"
+                            f"highpass=f=65,afade=t=in:d=0.008,"
+                            f"afade=t=out:st={duracion-0.008:.6f}:d=0.008",
+                            "-ar", SR, "-ac", "2", "-c:a", "pcm_s16le", palabra],
+                           trabajo / f"{escena}_{i}_palabra.log")
+                    with wave.open(str(palabra)) as audio:
+                        agregado = audio.readframes(audio.getnframes())
+                    if len(agregado) != round(duracion * SR) * 4:
+                        raise ValueError(f"Palabra incompleta para {escena}")
+                insertos.append((inserto["posicion"], agregado))
+            contenido = insertar_pcm(contenido, insertos, SR, 4)
+            with wave.open(str(recortado), "wb") as audio:
+                audio.setparams(parametros)
+                audio.writeframes(contenido)
         recortados.append(recortado)
     corta = nombre.split()[0]
     bruto = trabajo / f"{corta}_voz.wav"
@@ -77,7 +105,7 @@ def preparar_voz(nombre, fuente, destino, trabajo):
     offset = 0
     salidas = {}
     for escena in escenas:
-        muestras = round(duracion_audio(RECORTES[escena]) * SR)
+        muestras = round(duracion_editada(escena, RECORTES[escena]) * SR)
         total = round(GUION[escena][0] * SR)
         numero = list(GUION).index(escena) + 1
         salida = destino / f"{numero:02d}_{escena}_{corta}.wav"

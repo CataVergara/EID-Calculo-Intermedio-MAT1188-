@@ -14,7 +14,6 @@ El ejemplo del proyecto usa x² − 4 en el intervalo de −3 a 3, distinto del 
 
 - Manim Community 0.22.0. [Documentación oficial](https://docs.manim.community/). Construcción de gráficas, fórmulas, rectángulos y animaciones.
 - FFmpeg. [Sitio oficial](https://ffmpeg.org/). Extracción y recorte de las voces, nivelación de volumen, unión y exportación del MP4.
-- Whisper, de OpenAI, utilizado mediante [faster-whisper](https://github.com/SYSTRAN/faster-whisper). Transcripción local para localizar frases, repeticiones y posibles errores. Las transcripciones no se presentan como subtítulos ni sustituyen la comprobación de los números y los cortes.
 
 ## Declaración de IA
 
@@ -22,6 +21,5 @@ El ejemplo del proyecto usa x² − 4 en el intervalo de −3 a 3, distinto del 
 |---|---|---|
 | Claude, de Anthropic | Guía inicial, propuesta del ejemplo, borrador del código y apoyo en texto y distribución visual, según la declaración original del equipo | Comparación con el apunte, las referencias, los cálculos exactos y la ejecución del código |
 | Codex, de OpenAI | Revisión del código, cálculos, resaltados, guion, ficha, fuentes, pruebas y montaje con las grabaciones recibidas | Pruebas del repositorio, evaluación con una antiderivada, revisión de fotogramas, duración y reproducción técnica del MP4 |
-| Whisper, de OpenAI | Transcripción para seleccionar tomas y localizar repeticiones en las voces | Comparación con el guion, las pausas y los valores matemáticos. Se conservan los originales para revisar cualquier recorte |
 
 Las narraciones provienen de las grabaciones de Catalina, Ignacio y Marcelo. No se generaron ni clonaron voces. La edición conserva su velocidad natural. El equipo debe revisar el video completo y comprender tanto la matemática como el código antes de entregar.

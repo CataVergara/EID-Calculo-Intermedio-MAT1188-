@@ -39,7 +39,9 @@ No se exige leer la declaración en voz alta. Se mantiene la información en los
 - Se completó la ficha con 5:15. El commit identificado corresponde al código utilizado para el video. La pauta exige el enlace del repositorio, pero no obliga a añadir un enlace externo al video si se entrega como MP4 separado.
 - Se identificaron las cuentas reales de GitHub de los tres integrantes.
 - Se completaron los años, enlaces y apartados de Stewart y Thomas. Se comprobaron en los propios libros. El equipo aún debe repasar esos apartados.
-- Se declaró también el apoyo de Whisper en la transcripción para localizar recortes.
+
+- Se separó «A más» de su definición con una pausa breve. Se completó «bajo el eje» reutilizando la palabra de la misma grabación.
+- Los rótulos de altura y aporte usan LaTeX, para mostrar el punto muestra como $x_i^{*}$.
 
 La sección 1 fue confirmada por Marcelo y está incorporada en la ficha.
 

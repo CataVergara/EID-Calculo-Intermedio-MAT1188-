@@ -2,7 +2,7 @@
 
 import unittest
 
-from utils.edicion import RECORTES, duracion_audio, validar_recortes
+from utils.edicion import RECORTES, duracion_editada, insertar_pcm, validar_recortes
 from utils.guion import GUION
 
 
@@ -10,9 +10,18 @@ class EdicionTest(unittest.TestCase):
     def test_tomas_caben_y_conservan_pausa_entre_voces(self):
         validar_recortes()
         for escena in RECORTES:
-            self.assertLessEqual(duracion_audio(RECORTES[escena]), GUION[escena][0])
-        for escena in ("TeoriaDefiniciones", "SumaDeAportes"):
-            self.assertAlmostEqual(GUION[escena][0] - duracion_audio(RECORTES[escena]), 0.5)
+            self.assertLessEqual(duracion_editada(escena, RECORTES[escena]), GUION[escena][0])
+        self.assertAlmostEqual(duracion_editada("TeoriaDefiniciones", RECORTES["TeoriaDefiniciones"]), 40.44)
+        self.assertAlmostEqual(GUION["SumaDeAportes"][0] - duracion_editada("SumaDeAportes", RECORTES["SumaDeAportes"]), 0.5)
+
+    def test_insertos_conservan_el_audio_y_las_posiciones_originales(self):
+        # Dos frames por segundo y dos bytes por frame, como un PCM mono de 16 bits.
+        original = b"aabbccdd"
+        self.assertEqual(insertar_pcm(original, [(0.5, b"00"), (1.5, b"ee")], 2, 2),
+                         b"aa00bbcceedd")
+        for insertos in ([(3, b"ee")], [(1, b"e")], [(1.5, b"ee"), (0.5, b"ee")]):
+            with self.subTest(insertos=insertos), self.assertRaises(ValueError):
+                insertar_pcm(original, insertos, 2, 2)
 
     def test_rechaza_voz_que_se_truncaria(self):
         with self.assertRaisesRegex(ValueError, "excede"):
