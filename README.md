@@ -21,7 +21,7 @@
 - `montar.py`: extrae y nivela las voces, las une con el video y prepara archivos separados para CapCut.
 - `README.md` - Este archivo.
 - `render.py` y `render.ps1` - Renderizan y ensamblan las diez escenas en orden narrativo.
-- [Guion del video](docs/guion.pdf) y [ficha de entrega](docs/MAT1188_EID_G06_2026.pdf): documentos del montaje final. Las fuentes editables están en la misma carpeta. La sección 1 queda pendiente de confirmar en Blackboard.
+- [Guion del video](docs/guion.pdf) y [ficha de entrega](docs/MAT1188_EID_G06_2026.pdf): documentos del montaje final. Las fuentes editables están en la misma carpeta. El curso corresponde a MAT1188, sección 1.
 - `media/output/MAT1188_EID_G06_2026.mp4` - Video generado localmente; los renders no se versionan.
 
 ## Entorno y dependencias

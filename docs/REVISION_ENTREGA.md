@@ -41,9 +41,10 @@ No se exige leer la declaración en voz alta. Se mantiene la información en los
 - Se completaron los años, enlaces y apartados de Stewart y Thomas. Se comprobaron en los propios libros. El equipo aún debe repasar esos apartados.
 - Se declaró también el apoyo de Whisper en la transcripción para localizar recortes.
 
+La sección 1 fue confirmada por Marcelo y está incorporada en la ficha.
+
 ## Comprobaciones que quedan a cargo del equipo
 
-- La sección 1 se indicó como provisional. Confirmarla en Blackboard antes de entregar la ficha.
 - Revisar el PDF de ética que ya fue enviado. El borrador antiguo localizado usa INFO1188 y deja tema y pregunta en blanco. No se modificó ese acuerdo ni se presupone que coincida con el PDF firmado. Comprobar que la versión entregada tenga los datos correctos de MAT1188.
 - Reproducir el MP4 completo con auriculares. La edición retira repeticiones y una cifra dudosa en la comparación, conservando la frase correcta «aproximadamente quince coma treinta y tres» y el valor exacto 46/3 en pantalla.
 - Verificar nombres de archivos, permisos, commit y comprobante de entrega. Subir video y ficha como archivos separados.
