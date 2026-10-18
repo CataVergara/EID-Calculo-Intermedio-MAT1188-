@@ -20,6 +20,6 @@ El ejemplo del proyecto usa x² − 4 en el intervalo de −3 a 3, distinto del 
 | Herramienta | Finalidad y partes apoyadas | Comprobación |
 |---|---|---|
 | Claude, de Anthropic | Guía inicial, propuesta del ejemplo, borrador del código y apoyo en texto y distribución visual, según la declaración original del equipo | Comparación con el apunte, las referencias, los cálculos exactos y la ejecución del código |
-| Codex, de OpenAI | Revisión del código, cálculos, resaltados, guion, ficha, fuentes, pruebas y montaje con las grabaciones recibidas | Pruebas del repositorio, evaluación con una antiderivada, revisión de fotogramas, duración y reproducción técnica del MP4 |
+| Codex, de OpenAI | Revisión del código, cálculos, resaltados, guion, ficha, fuentes, pruebas y revisión del montaje del video | Pruebas del repositorio, evaluación con una antiderivada, revisión de fotogramas, duración y reproducción técnica del MP4 |
 
-Las narraciones provienen de las grabaciones de Catalina, Ignacio y Marcelo. No se generaron ni clonaron voces. La edición conserva su velocidad natural. El equipo debe revisar el video completo y comprender tanto la matemática como el código antes de entregar.
+Las narraciones provienen de las grabaciones de Catalina, Ignacio y Marcelo. No se generaron ni clonaron voces. La edición conserva su velocidad natural.

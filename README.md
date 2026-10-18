@@ -18,7 +18,7 @@
 - `scenes/escenas.py`: las diez escenas del video, con fórmulas, rótulos y pausas para el guion.
 - `utils/guion.py`: orden, duración de cada escena e identificación de las voces. El montaje actual dura 5:15.
 - `utils/edicion.py`: tomas elegidas, recortes de repeticiones y ajustes de las pausas de voz.
-- `montar.py`: extrae y nivela las voces, las une con el video y prepara archivos separados para CapCut.
+- `montar.py`: une las pistas finales con el video en mono y prepara archivos para CapCut. También conserva el modo de recortes de las grabaciones anteriores.
 - `README.md` - Este archivo.
 - `render.py` y `render.ps1` - Renderizan y ensamblan las diez escenas en orden narrativo.
 - [Guion del video](docs/guion.pdf) y [ficha de entrega](docs/MAT1188_EID_G06_2026.pdf): documentos del montaje final. Las fuentes editables están en la misma carpeta. El curso corresponde a MAT1188, sección 1.
@@ -66,7 +66,19 @@ Para unir renders existentes: `python render.py --quality qh --skip-render`.
 
 En PowerShell se puede usar el mismo flujo con `.\render.ps1 -Calidad qh`.
 
-**Montaje con las tres voces:**
+**Montaje final con las tres voces ya corregidas:**
+```sh
+python montar.py \
+  --audios-editados "/ruta/CapCut/Audios" \
+  --salida media/output/montaje_final
+```
+Usar los diez WAV de las escenas de la carpeta final de CapCut conservada por el equipo. Este modo comprueba que sean mono, PCM de 16 bits y 48 kHz, con la duración exacta de cada escena. Conserva las pausas y los cortes aprobados sin volver a recortar ni normalizar las voces. No admite pistas faltantes ni mezclar esta opción con las grabaciones originales.
+
+Ejecutar primero `python render.py --quality qh`. La salida incluye el MP4 de 5:15 con audio AAC mono, el video sin sonido, las diez escenas, los WAV por escena y por persona, la pista alineada desde cero y los tiempos de CapCut. Las grabaciones y las pistas editadas se conservan fuera de GitHub. La ficha PDF identifica el commit del código de las escenas.
+
+La escena ComparacionFinal espera hasta el segundo 42,55 antes de mostrar el recuadro de cierre. Su tamaño y posición dejan espacio a la fracción y al pie de página, como en el video final.
+
+**Montaje anterior desde las grabaciones originales:**
 ```sh
 python montar.py \
   --catalina "/ruta/catalina.mov" \
@@ -81,7 +93,7 @@ Ejecutar primero el render en `qh`. El montaje comprueba que las diez escenas te
 
 Los archivos recibidos se usan como fuentes de audio. La salida incluye `MAT1188_EID_G06_2026.mp4`, el video sin sonido, una pista de voces alineada desde cero y las escenas y audios separados para CapCut. `Tiempos_CapCut.csv` indica sus posiciones y si cada grabación está disponible. Si se omite algún archivo de Marcelo, la salida se identifica como borrador y señala las escenas pendientes. Las grabaciones y los renders permanecen fuera de Git.
 
-Los recortes e insertos se fijan en `utils/edicion.py` y corresponden a las grabaciones originales utilizadas. En Catalina se añade una pausa de 0,25 segundos después de «A más». También se separan las frases sobre el signo del área, la resta de A menos a A más y el área total. Se acortan silencios al inicio y al final de la escena para conservar los tiempos del montaje. En Ignacio se reduce una repetición del setenta y cinco. En Marcelo se seleccionan las tomas completas y se conserva la frase correcta «aproximadamente quince coma treinta y tres», con el valor exacto 46/3 visible. No se modifica la velocidad ni se genera voz. Los bordes se suavizan y el volumen se nivela por persona. Para comprobar solo los audios se puede añadir `--solo-audio` al comando anterior.
+Los recortes e insertos de `utils/edicion.py` corresponden a las grabaciones anteriores. Este modo no contiene el suavizado final de Catalina ni la nueva toma de micrófono de Marcelo. Para conservar la entrega aprobada, usar `--audios-editados` con las pistas finales. En ellas se mantiene la pausa después de «A más», la conjunción «y» antes de explicar el área total y los cortes de repeticiones. Las pausas de Marcelo no repiten fragmentos del micrófono. No se modifica la velocidad ni se genera voz. Para comprobar solo los audios se puede añadir `--solo-audio`.
 
 **Apoyos visuales:** los recuadros señalan el símbolo y el objeto que se están explicando. Permanecen visibles durante la explicación y se sustituyen al cambiar el foco. Se retiran junto con su contenido o al terminar la escena. El ancho, el punto muestra y la altura se conectan con un mismo rectángulo. Después se desarrolla el ejemplo de $x^*=2,5$, con altura y aporte $2,25$. Los cuatro aportes negativos se señalan uno a uno, junto con los signos de resta y suma y el valor absoluto. Los colores de $A^+$ y $A^-$ se mantienen en las fórmulas.
 

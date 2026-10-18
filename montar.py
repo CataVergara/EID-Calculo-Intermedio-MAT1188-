@@ -1,4 +1,4 @@
-"""Monta los renders 1080p60 con las grabaciones originales mediante FFmpeg."""
+"""Monta los renders 1080p60 con pistas editadas o grabaciones originales."""
 
 import argparse
 import csv
@@ -122,21 +122,48 @@ def verificar_videos(carpeta):
             raise ValueError(f"{escena}: render desactualizado. Ejecutar python render.py --quality qh.")
 
 
+def validar_audios_editados(carpeta):
+    """Exige las diez pistas completas para conservar los cortes ya aprobados."""
+    pistas = {}
+    for numero, (escena, (duracion, voz)) in enumerate(GUION.items(), 1):
+        archivo = carpeta / f"{numero:02d}_{escena}_{voz.split()[0]}.wav"
+        with wave.open(str(archivo)) as audio:
+            muestras = round(duracion * SR)
+            if (audio.getnchannels(), audio.getsampwidth(), audio.getframerate(),
+                    audio.getnframes()) != (1, 2, SR, muestras):
+                raise ValueError(f"{archivo.name}: se necesita PCM mono de 16 bits, "
+                                 f"48 kHz y {duracion} segundos.")
+            if len(audio.readframes(muestras)) != muestras * 2:
+                raise ValueError(f"{archivo.name}: el archivo de audio está incompleto.")
+        pistas[escena] = archivo
+    return pistas
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--catalina", required=True, type=Path)
-    parser.add_argument("--ignacio", required=True, type=Path)
+    parser.add_argument("--audios-editados", type=Path,
+                        help="Carpeta con los diez WAV finales de CapCut, sin volver a editarlos.")
+    parser.add_argument("--catalina", type=Path)
+    parser.add_argument("--ignacio", type=Path)
     for parte in ("refinamiento", "comparacion", "respuesta", "creditos"):
         parser.add_argument(f"--marcelo-{parte}", type=Path)
     parser.add_argument("--videos", type=Path, default=ROOT / "media/videos/escenas/1080p60")
     parser.add_argument("--salida", type=Path, default=ROOT / "media/output/montaje")
     parser.add_argument("--solo-audio", action="store_true")
     args = parser.parse_args()
+    grabaciones = [args.catalina, args.ignacio, args.marcelo_refinamiento,
+                   args.marcelo_comparacion, args.marcelo_respuesta, args.marcelo_creditos]
+    if args.audios_editados and any(grabaciones):
+        parser.error("Elegir --audios-editados o las grabaciones originales, sin combinarlos.")
+    if not args.audios_editados and not (args.catalina and args.ignacio):
+        parser.error("Indicar --audios-editados o las grabaciones --catalina y --ignacio.")
     validar_recortes()
     for programa in ("ffmpeg", "ffprobe"):
         if shutil.which(programa) is None:
             raise RuntimeError(f"Se necesita {programa} en el PATH.")
-    fuentes = {"Catalina Vergara": args.catalina.resolve(), "Ignacio De Celis": args.ignacio.resolve()}
+    fuentes = {} if args.audios_editados else {
+        "Catalina Vergara": args.catalina.resolve(), "Ignacio De Celis": args.ignacio.resolve(),
+    }
     marcelo = {escena: archivo.resolve() for escena, archivo in (
         ("Refinamiento", args.marcelo_refinamiento),
         ("ComparacionFinal", args.marcelo_comparacion),
@@ -148,6 +175,9 @@ def main():
     originales = [archivo for fuente in fuentes.values()
                   for archivo in (fuente.values() if isinstance(fuente, dict) else (fuente,))]
     salida = args.salida.resolve()
+    editados = args.audios_editados.resolve() if args.audios_editados else None
+    if editados and (editados.is_relative_to(salida) or salida.is_relative_to(editados)):
+        raise ValueError("La carpeta de salida debe estar separada de los audios editados.")
     for fuente in (*originales, args.videos.resolve()):
         if fuente.is_relative_to(salida):
             raise ValueError("La carpeta de salida debe estar separada de los originales.")
@@ -156,10 +186,20 @@ def main():
             raise FileNotFoundError(fuente)
     if not args.solo_audio:
         verificar_videos(args.videos)
+    finales = validar_audios_editados(editados) if editados else {}
     trabajo, audios = salida / "intermedios", salida / "Audios"
     for carpeta in (trabajo, audios):
         carpeta.mkdir(parents=True, exist_ok=True)
     pistas = {}
+    for escena, archivo in finales.items():
+        destino = audios / archivo.name
+        shutil.copy2(archivo, destino)
+        pistas[escena] = destino
+    if finales:
+        for voz in dict.fromkeys(voz for _, voz in GUION.values()):
+            corta = voz.split()[0]
+            unir([pistas[e] for e, (_, persona) in GUION.items() if persona == voz],
+                 audios / f"{corta}_voz_editada.wav", trabajo / f"{corta}_final.log")
     for nombre, fuente in fuentes.items():
         print(f"Preparando {nombre}...", flush=True)
         pistas.update(preparar_voz(nombre, fuente, audios, trabajo))
@@ -196,7 +236,7 @@ def main():
         shutil.copy2(args.videos / f"{escena}.mp4", clips / f"{i:02d}_{escena}.mp4")
     final = salida / ("BORRADOR_faltan_voces.mp4" if pendientes else "MAT1188_EID_G06_2026.mp4")
     ffmpeg(["-i", base, "-i", track, "-map", "0:v:0", "-map", "1:a:0",
-            "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", SR,
+            "-c:v", "copy", "-c:a", "aac", "-b:a", "128k", "-ar", SR, "-ac", "1",
             "-t", DURACION_TOTAL, "-movflags", "+faststart", final], trabajo / "montaje.log")
     print(f"Montaje generado: {final}")
     if pendientes:

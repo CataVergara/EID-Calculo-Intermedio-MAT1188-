@@ -1,6 +1,8 @@
 # Revisión de la entrega del Grupo 6
 
-Revisión del 17 de octubre de 2026. Se contrastaron los documentos adjuntos: pauta común, rúbrica actualizada, apunte base y temas por grupo. Esta revisión ayuda a preparar la entrega y no reemplaza las instrucciones que publique la docente en Blackboard.
+Revisión del 18 de octubre de 2026. Se contrastaron los documentos adjuntos: pauta común, rúbrica actualizada, apunte base y temas por grupo. Esta revisión ayuda a preparar la entrega y no reemplaza las instrucciones que publique la docente en Blackboard.
+
+El código incorpora el recuadro final de ComparacionFinal con el mismo tamaño, posición y momento de aparición del video. El programa de montaje admite las diez pistas finales de CapCut mediante `--audios-editados`, conserva los recortes aprobados y exporta audio mono. Se mantiene el modo anterior de grabaciones como historial, identificado en el README.
 
 ## Productos exigidos
 
@@ -45,10 +47,16 @@ No se exige leer la declaración en voz alta. Se mantiene la información en los
 
 La sección 1 fue confirmada por Marcelo y está incorporada en la ficha.
 
-## Comprobaciones que quedan a cargo del equipo
+## Comprobaciones al cierre
+
+- El equipo confirmó que ya revisó el video completo.
+- Pasaron las 18 pruebas de cálculos, escenas, tiempos, edición y montaje.
+- El render de ComparacionFinal coincide con los 2.640 fotogramas de esa escena en el video final.
+- El montaje con las pistas editadas conserva las muestras de las tres voces y las pistas de imagen y audio del MP4 final. La salida dura 315 segundos, tiene 18.900 fotogramas y audio mono.
+
+## Comprobaciones en Blackboard
 
 - Revisar el PDF de ética que ya fue enviado. El borrador antiguo localizado usa INFO1188 y deja tema y pregunta en blanco. No se modificó ese acuerdo ni se presupone que coincida con el PDF firmado. Comprobar que la versión entregada tenga los datos correctos de MAT1188.
-- Reproducir el MP4 completo con auriculares. La edición retira repeticiones y una cifra dudosa en la comparación, conservando la frase correcta «aproximadamente quince coma treinta y tres» y el valor exacto 46/3 en pantalla.
 - Verificar nombres de archivos, permisos, commit y comprobante de entrega. Subir video y ficha como archivos separados.
 
 ## Contradicción que debe confirmar la docente

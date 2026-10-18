@@ -611,9 +611,9 @@ class ComparacionFinal(EscenaG6):
         etq_neg = mt(r"A^-=32/3", font_size=27, color=COL_NEG).next_to(barra_neg, UP, buff=0.16)
         self.resaltar(area, color=COL_AREA, run_time=0.7, animaciones=(Write(area),))
         self.play(FadeIn(barra_pos), FadeIn(barra_neg), FadeIn(etq_pos), FadeIn(etq_neg), run_time=0.7)
-        self.esperar_hasta(41.4)
+        self.esperar_hasta(42.55)
         conclusion = mt(r"A^->0\quad\Rightarrow\quad A^+-A^-<A^++A^-", font_size=35)
-        conclusion.move_to(DOWN * 3.4)
+        conclusion.move_to(DOWN * 3.4).scale(0.9).shift(UP * 0.06)
         self.resaltar(conclusion, color=WHITE, run_time=0.7, animaciones=(Write(conclusion),))
         self.finalizar()
 
