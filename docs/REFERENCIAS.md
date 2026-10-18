@@ -2,7 +2,7 @@
 
 ## Material matemático
 
-1. Equipo docente de Cálculo Intermedio (MAT1188). (2026). *Introducción a la integral*. Apunte distribuido en Blackboard. El archivo no identifica autores individuales.
+1. Equipo docente de Cálculo Intermedio (MAT1188). (2026). *Introducción a la integral*. [Apunte distribuido en Blackboard](curso/apunte_introduccion_a_la_integral.pdf). El archivo no identifica autores individuales.
 2. Stewart, J. (2012). *Cálculo de una variable. Trascendentes tempranas*. 7.ª edición. Cengage Learning. ISBN de la copia digital: 978-607-481-881-9. [PDF alojado por la Universidad de la República](https://eva.interior.udelar.edu.uy/pluginfile.php/96366/mod_resource/content/1/Stewart.%20C%C3%A1lculo%20de%20una%20variable..pdf). La sección 5.2 explica el área neta en la página impresa 373 y la regla del punto medio en la 378. Corresponden a las páginas 406 y 411 del PDF.
 3. Thomas, G. B., Weir, M. D. y Hass, J. (2010). *Cálculo. Una variable*. 12.ª edición. Pearson Educación. ISBN: 978-607-32-0164-3. [PDF alojado por la Universidad Nacional de Cuyo](https://fcen.uncuyo.edu.ar/upload/calculo-de-una-variable-thomas-12ed.pdf). La sección 5.4, páginas impresas 280 y 281, distingue la integral del área total y explica la suma de valores absolutos por tramos. Corresponden a las páginas 300 y 301 del PDF.
 

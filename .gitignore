@@ -12,3 +12,13 @@ Thumbs.db
 venv/
 .env
 .venv/
+
+# Copias comprimidas y archivos generados por LaTeX.
+*.zip
+*.log
+*.aux
+*.fls
+*.fdb_latexmk
+*.out
+*.synctex.gz
+*.toc
